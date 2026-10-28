@@ -1,0 +1,249 @@
+@import './tokens.css';
+
+/* 基礎重置與無障礙設定 */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-family: var(--font-base);
+  font-size: 16px;
+  line-height: var(--leading-normal);
+  color: var(--ink-primary);
+  background-color: var(--bg-sand);
+  scroll-padding-top: calc(var(--header-height) + 16px);
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 焦點狀態全面加強 */
+:focus-visible {
+  outline: var(--focus-ring);
+  outline-offset: var(--focus-offset);
+  border-radius: var(--radius-sm);
+}
+
+a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+a:hover {
+  color: var(--primary-hover);
+}
+
+button {
+  font-family: inherit;
+  font-size: var(--text-base);
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 48px; /* 滿足觸控與行動操作無障礙標準 */
+  padding: 0 var(--space-4);
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: background-color 0.15s ease, transform 0.05s ease, border-color 0.15s ease;
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* 主按鈕 */
+.btn-primary {
+  background-color: var(--primary);
+  color: #FFFFFF;
+}
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+}
+
+/* 次要按鈕 */
+.btn-secondary {
+  background-color: var(--surface);
+  color: var(--ink-primary);
+  border: 2px solid var(--border);
+}
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--bg-sand-darker);
+  border-color: var(--ink-secondary);
+}
+
+/* 幽靈/連結按鈕 */
+.btn-ghost {
+  color: var(--primary);
+  background-color: transparent;
+}
+.btn-ghost:hover:not(:disabled) {
+  background-color: var(--primary-light);
+}
+
+/* 表單控制項 */
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="tel"],
+select,
+textarea {
+  font-family: inherit;
+  font-size: var(--text-base);
+  line-height: 1.5;
+  color: var(--ink-primary);
+  background-color: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  min-height: 48px;
+  width: 100%;
+  transition: border-color 0.15s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--border-focus);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.2);
+}
+
+textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* 卡片與容器 */
+.card {
+  background-color: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+}
+
+.container {
+  width: 100%;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+/* 頂部跳過導航 (無障礙) */
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 16px;
+  background: var(--primary);
+  color: #FFFFFF;
+  padding: 12px 20px;
+  z-index: 9999;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  text-decoration: none;
+}
+.skip-link:focus {
+  top: 16px;
+}
+
+/* 標籤徽章 */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.chip-success {
+  background-color: var(--status-success-bg);
+  color: var(--status-success-ink);
+  border-color: var(--status-success-border);
+}
+.chip-warning {
+  background-color: var(--status-warning-bg);
+  color: var(--status-warning-ink);
+  border-color: var(--status-warning-border);
+}
+.chip-info {
+  background-color: var(--status-info-bg);
+  color: var(--status-info-ink);
+  border-color: var(--status-info-border);
+}
+.chip-danger {
+  background-color: var(--status-danger-bg);
+  color: var(--status-danger-ink);
+  border-color: var(--status-danger-border);
+}
+.chip-neutral {
+  background-color: var(--bg-sand-darker);
+  color: var(--ink-secondary);
+  border-color: var(--border);
+}
+
+/* 模擬徽章 */
+.sim-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--text-xs);
+  padding: 2px 8px;
+  border-radius: 4px;
+  background-color: #FEF3C7;
+  color: #92400E;
+  border: 1px dashed #D97706;
+  font-weight: 600;
+}
+
+/* 表格通用排版 */
+.table-wrapper {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+th, td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--border);
+  font-size: var(--text-base);
+}
+
+th {
+  background-color: var(--bg-sand-darker);
+  font-weight: 700;
+  color: var(--ink-primary);
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:hover td {
+  background-color: #FAF8F2;
+}

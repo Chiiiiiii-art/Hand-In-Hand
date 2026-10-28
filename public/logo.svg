@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
+  <rect width="48" height="48" rx="12" fill="#0F766E"/>
+  <!-- Two overlapping stylized holding hands / bridge arc -->
+  <path d="M12 28C12 22 17 17 23 17C26.5 17 29.5 18.7 31.4 21.4" stroke="#FAF6EE" stroke-width="3.5" stroke-linecap="round"/>
+  <path d="M36 20C36 26 31 31 25 31C21.5 31 18.5 29.3 16.6 26.6" stroke="#C2410C" stroke-width="3.5" stroke-linecap="round"/>
+  <circle cx="15" cy="18" r="3" fill="#FAF6EE"/>
+  <circle cx="33" cy="30" r="3" fill="#C2410C"/>
+</svg>
