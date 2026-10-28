@@ -51,24 +51,24 @@ export const Register: React.FC = () => {
     e.preventDefault();
     const newErrors: FormErrors = {};
 
-    // 必填驗證（FR-02, BR-01, BR-02）
+    // 必填驗證
     if (!nickname.trim()) {
-      newErrors.nickname = '請輸入您想在小組中被稱呼的暱稱';
+      newErrors.nickname = '請輸入你想在小隊中被稱呼的暱稱';
     }
     if (age === '' || age < 18) {
-      newErrors.age = '依服務規範（BR-01），參與者需年滿 18 歲';
+      newErrors.age = '依聚會守則，小隊夥伴需年滿 18 歲';
     }
     if (!contactInfo.trim()) {
-      newErrors.contactInfo = '請提供聯絡方式（Email 或 LINE），以便進行一對一可及性確認';
+      newErrors.contactInfo = '請提供聯絡方式（Email 或 LINE），方便小幫手進行一對一手感調校';
     }
     if (selectedSlots.length === 0) {
-      newErrors.availableSlots = '請至少勾選一個您可以參與的時段';
+      newErrors.availableSlots = '請至少勾選一個你可以連線的時段';
     }
     if (!inputMethod.trim()) {
-      newErrors.inputMethod = '請填寫您偏好的操作方式（如滑鼠、手把或特定輔具）';
+      newErrors.inputMethod = '請填寫你習慣的操作設備（如滑鼠、手把或特定輔具）';
     }
     if (!agreedRules) {
-      newErrors.agreedRules = '請閱讀並同意社群守則（BR-02）後送出';
+      newErrors.agreedRules = '請閱讀並勾選同意客廳約定後送出';
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -97,7 +97,7 @@ export const Register: React.FC = () => {
       }
     });
 
-    // 跳轉至狀態頁
+    // 跳轉至小隊狀態頁
     navigate('/my-status');
   };
 
@@ -122,10 +122,10 @@ export const Register: React.FC = () => {
       <div style={{ marginBottom: 'var(--space-6)', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: 'var(--space-3)' }}>
         <div>
           <h1 style={{ fontSize: 'var(--text-3xl)', fontWeight: 700, marginBottom: 'var(--space-2)' }}>
-            參與需求與報名登記 (FR-02)
+            預約你的固定小隊｜填寫操作習慣與時間
           </h1>
           <p style={{ color: 'var(--ink-secondary)', fontSize: 'var(--text-base)' }}>
-            請填寫您的基本資訊與操作偏好。送出後，服務團隊會在一對一確認後為您安排固定小組。
+            放輕鬆填寫你平時習慣的設備與時段。送出後，小幫手會先與你線上調校手感，為你安排最舒適的小隊夥伴。
           </p>
         </div>
         <button
@@ -139,7 +139,7 @@ export const Register: React.FC = () => {
         </button>
       </div>
 
-      {/* 錯誤摘要看板 (無障礙與情境 6.2 申請資料不完整驗證) */}
+      {/* 錯誤摘要看板 */}
       {hasErrors && (
         <div
           ref={errorSummaryRef}
@@ -156,7 +156,7 @@ export const Register: React.FC = () => {
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--status-danger-ink)', fontWeight: 700, marginBottom: 8 }} id="error-summary-title">
             <WarningCircle size={24} weight="fill" />
-            <span>報名表尚有 {Object.keys(errors).length} 項需要補充或修正：</span>
+            <span>還有 {Object.keys(errors).length} 項內容需要補充或微調：</span>
           </div>
           <ul style={{ paddingLeft: 'var(--space-6)', color: 'var(--status-danger-ink)', fontSize: 'var(--text-sm)', lineHeight: 1.6 }}>
             {errors.nickname && <li>{errors.nickname}</li>}
@@ -173,12 +173,12 @@ export const Register: React.FC = () => {
         {/* 基本資訊 */}
         <fieldset style={{ border: 'none', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
           <legend style={{ fontSize: 'var(--text-xl)', fontWeight: 700, marginBottom: 'var(--space-2)', color: 'var(--primary)' }}>
-            1. 基本資訊
+            1. 基本稱呼與聯絡方式
           </legend>
 
           <div>
             <label htmlFor="field-nickname" style={{ display: 'block', fontWeight: 600, marginBottom: 4 }}>
-              社群暱稱 <span style={{ color: 'var(--accent)' }}>* (必填)</span>
+              你想在小隊中被稱呼的暱稱 <span style={{ color: 'var(--accent)' }}>* (必填)</span>
             </label>
             <input
               id="field-nickname"
@@ -195,13 +195,13 @@ export const Register: React.FC = () => {
               </p>
             )}
             <small style={{ color: 'var(--ink-secondary)', display: 'block', marginTop: 4 }}>
-              此暱稱將公開於小組成員名單，不需填寫真實姓名。
+              此暱稱將公開於小隊夥伴名單，不需要填寫真實姓名。
             </small>
           </div>
 
           <div>
             <label htmlFor="field-age" style={{ display: 'block', fontWeight: 600, marginBottom: 4 }}>
-              年齡 <span style={{ color: 'var(--accent)' }}>* (必填，需年滿 18 歲)</span>
+              年齡確認 <span style={{ color: 'var(--accent)' }}>* (需年滿 18 歲)</span>
             </label>
             <input
               id="field-age"
@@ -222,7 +222,7 @@ export const Register: React.FC = () => {
 
           <div>
             <label htmlFor="field-contact" style={{ display: 'block', fontWeight: 600, marginBottom: 4 }}>
-              一對一聯絡管道 <span style={{ color: 'var(--accent)' }}>* (必填，限管理專員可見)</span>
+              小幫手一對一聯絡管道 <span style={{ color: 'var(--accent)' }}>* (必填，僅小幫手可見)</span>
             </label>
             <input
               id="field-contact"
@@ -239,7 +239,7 @@ export const Register: React.FC = () => {
               </p>
             )}
             <small style={{ color: 'var(--ink-secondary)', display: 'block', marginTop: 4 }}>
-              僅供初次測試通知與緊急備援使用，絕不公開。
+              僅供初次手感連線調校與緊急備援使用，絕不公開。
             </small>
           </div>
 
@@ -251,22 +251,22 @@ export const Register: React.FC = () => {
                 onChange={(e) => setShareContactConsent(e.target.checked)}
                 style={{ width: 20, height: 20 }}
               />
-              <span>我自願同意在未來活動外，向同組成員分享聯絡方式（非必要條件 BR-08）</span>
+              <span>我自願在未來聚會外，向同組成員分享聯絡方式（非必要條件，完全尊重自願）</span>
             </label>
           </div>
         </fieldset>
 
         <hr style={{ border: 'none', borderTop: '1px solid var(--border)' }} />
 
-        {/* 可及性與偏好 */}
+        {/* 設備手感與溝通偏好 */}
         <fieldset style={{ border: 'none', display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
           <legend style={{ fontSize: 'var(--text-xl)', fontWeight: 700, marginBottom: 'var(--space-2)', color: 'var(--primary)' }}>
-            2. 可及性與互動偏好
+            2. 設備手感與溝通偏好
           </legend>
 
           <div>
             <label style={{ display: 'block', fontWeight: 600, marginBottom: 8 }}>
-              可參與時段 <span style={{ color: 'var(--accent)' }}>* (可複選)</span>
+              方便連線的時段 <span style={{ color: 'var(--accent)' }}>* (可複選)</span>
             </label>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {slotOptions.map((slot) => (
@@ -290,14 +290,14 @@ export const Register: React.FC = () => {
 
           <div>
             <label htmlFor="field-input" style={{ display: 'block', fontWeight: 600, marginBottom: 4 }}>
-              您預計使用的操作設備與方式 <span style={{ color: 'var(--accent)' }}>* (必填)</span>
+              你預計使用的操作設備與方式 <span style={{ color: 'var(--accent)' }}>* (必填)</span>
             </label>
             <input
               id="field-input"
               type="text"
               value={inputMethod}
               onChange={(e) => setInputMethod(e.target.value)}
-              placeholder="例如：筆電普通滑鼠、單手微軟手把、特殊軌跡球、眼控設備"
+              placeholder="例如：筆電普通滑鼠、單手手把、特殊軌跡球、眼控設備"
               aria-invalid={!!errors.inputMethod}
             />
             {errors.inputMethod && (
@@ -309,14 +309,14 @@ export const Register: React.FC = () => {
 
           <div>
             <label htmlFor="field-comm" style={{ display: 'block', fontWeight: 600, marginBottom: 4 }}>
-              活動溝通偏好 (BR-05 文字與語音平等)
+              小隊溝通偏好（文字打字與語音一樣重要）
             </label>
             <select
               id="field-comm"
               value={communicationPreference}
               onChange={(e) => setCommunicationPreference(e.target.value as any)}
             >
-              <option value="文字為主">文字為主（不開麥克風，主持人與隊友同步文字支援）</option>
+              <option value="文字為主">文字為主（不開麥克風，小隊引導員與隊友全程文字同步支援）</option>
               <option value="語音為主">語音為主（使用 Discord 語音通話）</option>
               <option value="兩者皆可">兩者皆可（依活動情況彈性調整）</option>
             </select>
@@ -324,20 +324,20 @@ export const Register: React.FC = () => {
 
           <div>
             <label htmlFor="field-needs" style={{ display: 'block', fontWeight: 600, marginBottom: 4 }}>
-              希望服務團隊留意或協助的事項（免填診斷）
+              希望小幫手特別留意的悄悄話（免填任何診斷）
             </label>
             <textarea
               id="field-needs"
               value={supportNeeds}
               onChange={(e) => setSupportNeeds(e.target.value)}
-              placeholder="例如：移動游標較慢需要耐心等候、活動中途需暫停伸展 5 分鐘、需要大字體指引等。（不要求提供醫療診斷 BR-09）"
+              placeholder="例如：按鍵反應時間需要稍長請耐心等候、活動中途需暫停伸展 5 分鐘、需要大字體指引等。（免填病歷或醫療診斷）"
             />
           </div>
         </fieldset>
 
         <hr style={{ border: 'none', borderTop: '1px solid var(--border)' }} />
 
-        {/* 守則同意 */}
+        {/* 客廳約定同意 */}
         <div style={{ backgroundColor: 'var(--bg-sand-darker)', padding: 'var(--space-4)', borderRadius: 'var(--radius-md)' }}>
           <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, cursor: 'pointer' }}>
             <input
@@ -349,10 +349,10 @@ export const Register: React.FC = () => {
             />
             <div>
               <span style={{ fontWeight: 700, fontSize: 'var(--text-base)' }}>
-                我已閱讀並同意「攜手基地參與守則與社群安全規範」(BR-02)
+                我已閱讀並同意「攜手基地客廳約定與安心承諾」
               </span>
               <p style={{ fontSize: 'var(--text-sm)', color: 'var(--ink-secondary)', marginTop: 4 }}>
-                包含尊重文字與語音溝通、共同維護友善環境、私下聯繫自願原則等。
+                包含尊重打字與語音節奏、共同維護溫暖空間、私下聯繫自願原則等。
               </p>
               {errors.agreedRules && (
                 <p style={{ color: 'var(--status-danger-ink)', fontSize: 'var(--text-sm)', marginTop: 4 }}>
@@ -366,7 +366,7 @@ export const Register: React.FC = () => {
         {/* 送出按鈕 */}
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 'var(--space-3)' }}>
           <button type="submit" className="btn-primary" style={{ padding: '12px 32px' }}>
-            <span>確認無誤，送出申請</span>
+            <span>確認無誤，送出預約</span>
             <ArrowRight size={20} weight="bold" />
           </button>
         </div>

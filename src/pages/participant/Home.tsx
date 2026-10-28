@@ -31,8 +31,8 @@ export const Home: React.FC = () => {
       >
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            <span className="chip chip-info">年滿 18 歲同儕社群</span>
-            <span className="chip chip-success">放鬆建造 / 無競爭壓力</span>
+            <span className="chip chip-info">年滿 18 歲・在客廳輕鬆玩</span>
+            <span className="chip chip-success">休閒協作・無勝負壓力</span>
           </div>
 
           <h1
@@ -44,21 +44,21 @@ export const Home: React.FC = () => {
               lineHeight: 1.25,
             }}
           >
-            在熟悉的螢幕前，<br />
-            找到屬於你的<span style={{ color: 'var(--primary)' }}>固定同儕小組</span>。
+            來這遇見你的隊友，<br />
+            同時也是<span style={{ color: 'var(--primary)' }}>你的朋友</span>！
           </h1>
 
           <p style={{ fontSize: 'var(--text-lg)', color: 'var(--ink-secondary)', lineHeight: 1.7 }}>
-            攜手基地專為移動限制影響實體社交參與機會的成人設計。透過多人沙盒遊戲協作、專責主持人與無障礙操作確認，讓您穩定參與每週線上聚會，不必獨自面對陌生社群。
+            攜手基地是專為行動不便、長時間在家的成人打造的無障礙線上遊戲聚會所。透過每週固定小隊、專屬手感調校與溫柔小幫手守護，讓你放鬆享受每週連線時光，不用出門、也不必獨自面對陌生路人的社交焦慮。
           </p>
 
           <div style={{ display: 'flex', gap: 'var(--space-3)', flexWrap: 'wrap', marginTop: 'var(--space-2)' }}>
             <Link to="/register" className="btn-primary" style={{ textDecoration: 'none' }}>
-              <span>立即了解並填寫報名</span>
+              <span>立即預約小隊</span>
               <ArrowRight size={20} weight="bold" />
             </Link>
             <Link to="/rules" className="btn-secondary" style={{ textDecoration: 'none' }}>
-              <span>參與規則與常見問答</span>
+              <span>客廳約定與問答</span>
             </Link>
           </div>
         </div>
@@ -79,7 +79,7 @@ export const Home: React.FC = () => {
         </div>
       </section>
 
-      {/* 服務核心承諾 (四本柱) */}
+      {/* 聚會四大安心特色 (四本柱) */}
       <section aria-labelledby="features-title">
         <h2
           id="features-title"
@@ -90,7 +90,7 @@ export const Home: React.FC = () => {
             textAlign: 'center',
           }}
         >
-          為什麼選擇攜手基地？
+          為什麼在攜手基地玩，特別放鬆？
         </h2>
 
         <div
@@ -104,9 +104,9 @@ export const Home: React.FC = () => {
             <div style={{ color: 'var(--primary)', marginBottom: 12 }}>
               <Wheelchair size={36} weight="duotone" />
             </div>
-            <h3 style={{ fontSize: 'var(--text-xl)', marginBottom: 8 }}>事前可及性確認</h3>
+            <h3 style={{ fontSize: 'var(--text-xl)', marginBottom: 8 }}>專屬手感與設備調校</h3>
             <p style={{ color: 'var(--ink-secondary)', fontSize: 'var(--text-base)' }}>
-              分組前先確認您習慣的滑鼠、鍵盤、手把或輔具控制方式。不要求提供任何醫療診斷或證明，只聚焦操作是否舒適。
+              無論你習慣普通滑鼠、單手手把、軌跡球或特殊輔具，小幫手出發前都會一對一陪你測試連線，調到最順手才入隊；完全免附任何醫療證明。
             </p>
           </div>
 
@@ -114,9 +114,9 @@ export const Home: React.FC = () => {
             <div style={{ color: 'var(--primary)', marginBottom: 12 }}>
               <UsersThree size={36} weight="duotone" />
             </div>
-            <h3 style={{ fontSize: 'var(--text-xl)', marginBottom: 8 }}>6-8 人固定同儕小組</h3>
+            <h3 style={{ fontSize: 'var(--text-xl)', marginBottom: 8 }}>每週固定小隊</h3>
             <p style={{ color: 'var(--ink-secondary)', fontSize: 'var(--text-base)' }}>
-              每週固定成員聚會，避免陌生隨機配對帶來的社交焦慮。在 8 週的相處中建立真實互信與共同回憶。
+              固定 6-8 位熟面孔每週相聚，不必每次上線重新破冰，徹底告別路人隨機配對的緊張感，在 8 週協作中自然培養好默契。
             </p>
           </div>
 
@@ -124,9 +124,9 @@ export const Home: React.FC = () => {
             <div style={{ color: 'var(--primary)', marginBottom: 12 }}>
               <ChatCircleText size={36} weight="duotone" />
             </div>
-            <h3 style={{ fontSize: 'var(--text-xl)', marginBottom: 8 }}>多元溝通無壓力</h3>
+            <h3 style={{ fontSize: 'var(--text-xl)', marginBottom: 8 }}>文字打字與語音一樣重要</h3>
             <p style={{ color: 'var(--ink-secondary)', fontSize: 'var(--text-base)' }}>
-              尊重文字或語音互動偏好。不強迫開麥克風、不強迫公開私人通訊方式，純文字打字享有完整遊戲主持支援。
+              不想開麥克風完全沒關係！文字與語音享有同等尊重，小隊引導員與隊友全程看著文字頻道，絕不漏看你的任何一條訊息。
             </p>
           </div>
 
@@ -134,34 +134,34 @@ export const Home: React.FC = () => {
             <div style={{ color: 'var(--accent)', marginBottom: 12 }}>
               <ShieldCheck size={36} weight="duotone" />
             </div>
-            <h3 style={{ fontSize: 'var(--text-xl)', marginBottom: 8 }}>專責主持人與社群安全</h3>
+            <h3 style={{ fontSize: 'var(--text-xl)', marginBottom: 8 }}>客廳小幫手貼心守護</h3>
             <p style={{ color: 'var(--ink-secondary)', fontSize: 'var(--text-base)' }}>
-              每場皆由專業活動主持人協調，設有一對一問題回報機制。及時排解技術障礙，主動防範不當言行。
+              每場聚會皆有溫暖引導員陪伴；遇到任何按鍵卡關、斷線或不自在，隨時一對一私訊「安心求助」，全程保密為你排解。
             </p>
           </div>
         </div>
       </section>
 
-      {/* 參與者真實感受 (示範回饋) */}
+      {/* 隊友真實回饋 (示範案例) */}
       <section aria-labelledby="testimonials-title" className="card" style={{ backgroundColor: 'var(--bg-sand-darker)' }}>
         <h2 id="testimonials-title" style={{ fontSize: 'var(--text-xl)', marginBottom: 'var(--space-4)', display: 'flex', alignItems: 'center', gap: 8 }}>
           <Heart size={24} color="var(--accent)" weight="fill" />
-          <span>參與者分享</span>
-          <SimBadge label="示範回饋案例" />
+          <span>隊友悄悄話</span>
+          <SimBadge label="示範聚會心得" />
         </h2>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 'var(--space-4)' }}>
           <blockquote className="card" style={{ fontStyle: 'italic', color: 'var(--ink-primary)' }}>
-            “本來很擔心操作比別人慢會被嫌棄，但主持人和阿木都很有耐心地等我打字，第 2 週我們一起蓋出水上步道時，真的很有成就感！”
+            “本來很擔心自己手部動作慢會拖累大家，但引導員和阿木都很有耐心地等我打字，第 2 週我們合力完成水上涼亭時，真的超有成就感！”
             <footer style={{ marginTop: 8, fontStyle: 'normal', fontWeight: 700, color: 'var(--primary)' }}>
-              — 小禾（文字溝通為主，青鳥組成員）
+              — 小禾（文字溝通為主，青鳥組隊友）
             </footer>
           </blockquote>
 
           <blockquote className="card" style={{ fontStyle: 'italic', color: 'var(--ink-primary)' }}>
-            “很久沒有跟固定的朋友每週約好了。在遊戲裡分工合作，不用出門也不用煩惱無障礙交通，很放鬆。”
+            “很久沒有跟固定的朋友每週相約了。在遊戲裡分工合作，不用出門也不用煩惱無障礙交通，像真的回到朋友家客廳聊天一樣放鬆。”
             <footer style={{ marginTop: 8, fontStyle: 'normal', fontWeight: 700, color: 'var(--primary)' }}>
-              — 阿木（手把操作，青鳥組成員）
+              — 阿木（特製手把操作，青鳥組隊友）
             </footer>
           </blockquote>
         </div>
@@ -170,13 +170,13 @@ export const Home: React.FC = () => {
       {/* 底部召喚行動 CTA */}
       <section style={{ textAlign: 'center', padding: 'var(--space-8) 0' }}>
         <h2 style={{ fontSize: 'var(--text-2xl)', marginBottom: 'var(--space-3)' }}>
-          準備好開始一段全新的同儕旅程了嗎？
+          準備好在螢幕前，遇見你的固定隊友了嗎？
         </h2>
         <p style={{ color: 'var(--ink-secondary)', marginBottom: 'var(--space-6)', maxWidth: 600, margin: '0 auto var(--space-6) auto' }}>
-          填寫簡單的報名需求，服務團隊將在一對一確認可及性後為您安排固定小組。
+          花 3 分鐘告訴我們你的操作習慣與時間，小幫手會先與你線上調校手感，為你安排最合拍的小隊夥伴。
         </p>
         <Link to="/register" className="btn-primary" style={{ textDecoration: 'none', padding: '14px 32px', fontSize: 'var(--text-lg)' }}>
-          <span>開始填寫報名表</span>
+          <span>立即預約小隊</span>
           <ArrowRight size={22} weight="bold" />
         </Link>
       </section>

@@ -24,12 +24,12 @@ export const Shell: React.FC<{ children: ReactNode }> = ({ children }) => {
   const isParticipant = state.currentRole === 'participant';
 
   const participantNav = [
-    { label: '首頁', path: '/', icon: <House size={20} /> },
-    { label: '報名參與', path: '/register', icon: <ClipboardText size={20} /> },
-    { label: '我的狀態與活動', path: '/my-status', icon: <UserCheck size={20} /> },
-    { label: '問題求助', path: '/report-issue', icon: <WarningCircle size={20} /> },
-    { label: '活動回饋', path: '/feedback', icon: <ChatTeardropDots size={20} /> },
-    { label: '守則與常見問答', path: '/rules', icon: <BookOpenText size={20} /> },
+    { label: '聚會首頁', path: '/', icon: <House size={20} /> },
+    { label: '預約小隊', path: '/register', icon: <ClipboardText size={20} /> },
+    { label: '我的小隊天地', path: '/my-status', icon: <UserCheck size={20} /> },
+    { label: '安心求助', path: '/report-issue', icon: <WarningCircle size={20} /> },
+    { label: '聚會悄悄話', path: '/feedback', icon: <ChatTeardropDots size={20} /> },
+    { label: '客廳約定與問答', path: '/rules', icon: <BookOpenText size={20} /> },
   ];
 
   const adminNav = [
@@ -89,7 +89,7 @@ export const Shell: React.FC<{ children: ReactNode }> = ({ children }) => {
                 攜手基地
               </div>
               <div style={{ fontSize: 'var(--text-xs)', color: 'var(--ink-secondary)' }}>
-                線上同儕活動服務 (PoC)
+                無障礙線上遊戲聚會所 (PoC)
               </div>
             </div>
           </Link>
@@ -199,9 +199,9 @@ export const Shell: React.FC<{ children: ReactNode }> = ({ children }) => {
         <div className="container" style={{ fontSize: 'var(--text-xs)', color: 'var(--ink-secondary)', display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
             <div>
-              <strong>攜手基地 — 線上同儕活動服務系統 (UI PoC)</strong>
+              <strong>攜手基地 — 無障礙線上遊戲聚會所 (UI PoC)</strong>
               <p style={{ marginTop: 4 }}>
-                專為年滿 18 歲、移動限制影響實體社交參與機會之成人設計。
+                專為行動不便、長時間在家的成人打造，在螢幕前輕鬆連線的每週固定隊友。
               </p>
             </div>
             <div>
@@ -209,7 +209,7 @@ export const Shell: React.FC<{ children: ReactNode }> = ({ children }) => {
                 PRD 需求對照驗收清單 (FR-01 ~ FR-16)
               </Link>
               <Link to="/rules">
-                社群安全守則與服務條款
+                客廳約定與安心承諾
               </Link>
             </div>
           </div>

@@ -61,10 +61,10 @@ export const ParticipantFeedback: React.FC = () => {
     <div style={{ maxWidth: 760, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
       <div>
         <h1 style={{ fontSize: 'var(--text-3xl)', fontWeight: 700, marginBottom: 'var(--space-2)' }}>
-          活動體驗與同儕連結回饋 (FR-10, FR-14)
+          聚會悄悄話與心情日記
         </h1>
         <p style={{ color: 'var(--ink-secondary)', fontSize: 'var(--text-base)' }}>
-          目前的填寫身分：<strong>{applicant ? applicant.nickname : '訪客'}</strong>
+          填寫隊友：<strong>{applicant ? applicant.nickname : '訪客'}</strong>
         </p>
       </div>
 
@@ -76,7 +76,7 @@ export const ParticipantFeedback: React.FC = () => {
           className={activeTab === 'session' ? 'btn-primary' : 'btn-secondary'}
           style={{ minHeight: 40 }}
         >
-          單場活動回饋 (FR-10)
+          本週聚會心情
         </button>
         <button
           type="button"
@@ -84,7 +84,7 @@ export const ParticipantFeedback: React.FC = () => {
           className={activeTab === 'followup' ? 'btn-primary' : 'btn-secondary'}
           style={{ minHeight: 40 }}
         >
-          8 週結束後續追蹤 (FR-14)
+          8 週小隊畢業感想
         </button>
       </div>
 
@@ -92,7 +92,7 @@ export const ParticipantFeedback: React.FC = () => {
         <form onSubmit={handleSessionFeedbackSubmit} className="card" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
           <div>
             <label htmlFor="fb-session" style={{ display: 'block', fontWeight: 600, marginBottom: 4 }}>
-              選擇活動場次
+              選擇聚會場次
             </label>
             <select
               id="fb-session"
@@ -109,7 +109,7 @@ export const ParticipantFeedback: React.FC = () => {
 
           <div>
             <label style={{ display: 'block', fontWeight: 600, marginBottom: 8 }}>
-              整體活動體驗滿意度 (1-5 分)
+              今天玩得開心嗎？（整體滿意度 1-5 分）
             </label>
             <div style={{ display: 'flex', gap: 16 }}>
               {[1, 2, 3, 4, 5].map((val) => (
@@ -129,7 +129,7 @@ export const ParticipantFeedback: React.FC = () => {
 
           <div>
             <label style={{ display: 'block', fontWeight: 600, marginBottom: 8 }}>
-              同儕連結感／歸屬感自評 (PRD §9 成效衡量重要指標)
+              今天跟小隊隊友互動的感覺如何？（1 分覺得生疏，5 分像認識很久的好朋友）
             </label>
             <div style={{ display: 'flex', gap: 16 }}>
               {[1, 2, 3, 4, 5].map((val) => (
@@ -146,7 +146,7 @@ export const ParticipantFeedback: React.FC = () => {
               ))}
             </div>
             <small style={{ color: 'var(--ink-secondary)', display: 'block', marginTop: 4 }}>
-              1 分代表完全疏離；5 分代表強烈感受到被小組夥伴接納與連結。
+              隨心評分即可，有助於我們為大家打造更舒適的聚會步調。
             </small>
           </div>
 
@@ -158,7 +158,7 @@ export const ParticipantFeedback: React.FC = () => {
                 onChange={(e) => setEnjoyedCoop(e.target.checked)}
                 style={{ width: 20, height: 20 }}
               />
-              <span style={{ fontWeight: 600 }}>我享受本次共同建造與協作任務的過程</span>
+              <span style={{ fontWeight: 600 }}>我很享受今天跟隊友一起建造、分工合作的過程</span>
             </label>
           </div>
 
@@ -170,25 +170,25 @@ export const ParticipantFeedback: React.FC = () => {
                 onChange={(e) => setWantsNextSession(e.target.checked)}
                 style={{ width: 20, height: 20 }}
               />
-              <span style={{ fontWeight: 600 }}>我有意願繼續參加下週的固定小組活動</span>
+              <span style={{ fontWeight: 600 }}>我期待下週繼續跟固定隊友一起聚會</span>
             </label>
           </div>
 
           <div>
             <label htmlFor="fb-comment" style={{ display: 'block', fontWeight: 600, marginBottom: 4 }}>
-              自由想對主持或夥伴說的話（選填）
+              想對引導員或隊友說的悄悄話（選填）
             </label>
             <textarea
               id="fb-comment"
               value={freeComment}
               onChange={(e) => setFreeComment(e.target.value)}
-              placeholder="例如：今天的水上花園很漂亮！或是希望下次能先介紹建材用法..."
+              placeholder="例如：今天一起蓋的水上花園超美！或是希望下次能先介紹怎麼領取建材..."
             />
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <button type="submit" className="btn-primary">
-              <span>提交單場回饋</span>
+              <span>送出聚會悄悄話</span>
               <ArrowRight size={20} weight="bold" />
             </button>
           </div>
@@ -197,18 +197,18 @@ export const ParticipantFeedback: React.FC = () => {
         <form onSubmit={handleFollowUpSubmit} className="card" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
           <div style={{ backgroundColor: 'var(--primary-light)', padding: 'var(--space-4)', borderRadius: 'var(--radius-md)' }}>
             <h2 style={{ fontSize: 'var(--text-lg)', fontWeight: 700, color: 'var(--primary)', marginBottom: 4 }}>
-              8 週試辦週期結束追蹤自評 (FR-14)
+              8 週小隊畢業感想
             </h2>
             <p style={{ fontSize: 'var(--text-sm)', color: 'var(--ink-secondary)' }}>
-              此調查用於評估同儕支持之持續性，統計時將未回覆與自願回覆獨立計算，不作為負面懲罰。
+              恭喜完成 8 週的小隊冒險！花 2 分鐘聊聊這段時間的陪伴感受，你的心聲能讓攜手基地的客廳更溫暖。
             </p>
           </div>
 
           <div>
             <label style={{ display: 'block', fontWeight: 600, marginBottom: 8 }}>
-              活動週期結束後，您是否願意與小組成員繼續保持自願聯繫？ (持續性指標 §9)
+              8 週聚會告一段落後，你願意與小隊夥伴私下保持自願聯絡嗎？
             </label>
-            <div style={{ display: 'flex', gap: 24 }}>
+            <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
               <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
                 <input
                   type="radio"
@@ -216,7 +216,7 @@ export const ParticipantFeedback: React.FC = () => {
                   checked={willingToStayInTouch === true}
                   onChange={() => setWillingToStayInTouch(true)}
                 />
-                <span>非常願意（已自願互留聯絡方式或私下約好繼續同玩）</span>
+                <span>非常願意（已經私下交換聯絡方式，或約好要繼續一起同玩）</span>
               </label>
 
               <label style={{ display: 'flex', alignItems: 'center', gap: 6, cursor: 'pointer' }}>
@@ -226,14 +226,14 @@ export const ParticipantFeedback: React.FC = () => {
                   checked={willingToStayInTouch === false}
                   onChange={() => setWillingToStayInTouch(false)}
                 />
-                <span>目前暫無意願（偏好僅在官方活動期間交流）</span>
+                <span>先不用（比較喜歡在每週固定聚會時跟大家一起玩）</span>
               </label>
             </div>
           </div>
 
           <div>
             <label style={{ display: 'block', fontWeight: 600, marginBottom: 8 }}>
-              這 8 週同儕活動對您日常生活的正面心理影響程度 (1-5 分)
+              這 8 週的每週聚會，帶給你的心情放鬆與陪伴感受 (1-5 分)
             </label>
             <div style={{ display: 'flex', gap: 16 }}>
               {[1, 2, 3, 4, 5].map((val) => (
@@ -253,19 +253,19 @@ export const ParticipantFeedback: React.FC = () => {
 
           <div>
             <label htmlFor="followup-text" style={{ display: 'block', fontWeight: 600, marginBottom: 4 }}>
-              總結回饋與給後續梯次的建議
+              想對大家或給未來新隊友的話
             </label>
             <textarea
               id="followup-text"
               value={followUpText}
               onChange={(e) => setFollowUpText(e.target.value)}
-              placeholder="分享這段時間的成長、結交朋友的心情，或任何平台可改進之處..."
+              placeholder="分享這段時間的收穫、認識隊友的心情，或是希望攜手基地未來還能增加什麼新玩法..."
             />
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
             <button type="submit" className="btn-primary">
-              <span>提交 8 週後續追蹤</span>
+              <span>送出畢業感想</span>
               <CheckCircle size={20} weight="fill" />
             </button>
           </div>

@@ -40,7 +40,7 @@ export const RoleSwitch: React.FC = () => {
         aria-pressed={state.currentRole === 'participant'}
       >
         <User size={16} weight="bold" aria-hidden="true" />
-        <span>參與者端</span>
+        <span>隊友視角</span>
         {state.currentRole === 'participant' && currentApplicant && (
           <span style={{ opacity: 0.9, fontSize: '0.85em' }}>（{currentApplicant.nickname}）</span>
         )}
@@ -60,15 +60,15 @@ export const RoleSwitch: React.FC = () => {
         aria-pressed={state.currentRole === 'admin'}
       >
         <ShieldCheck size={16} weight="bold" aria-hidden="true" />
-        <span>管理者後台</span>
+        <span>後台管理</span>
       </button>
 
-      {/* 切換測試參與者視角下拉 */}
+      {/* 切換測試隊友視角下拉 */}
       {state.currentRole === 'participant' && (
         <select
           value={state.currentParticipantId}
           onChange={(e) => dispatch({ type: 'SET_PARTICIPANT_ID', id: e.target.value })}
-          aria-label="切換參與者身分"
+          aria-label="切換隊友身分"
           style={{
             minHeight: 36,
             width: 'auto',

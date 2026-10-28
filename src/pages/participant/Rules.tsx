@@ -1,25 +1,25 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { APP_CONFIG } from '../../config';
-import { ShieldCheck, Question, ArrowRight, CaretDown } from '@phosphor-icons/react';
+import { ShieldCheck, Question, ArrowRight } from '@phosphor-icons/react';
 
 export const Rules: React.FC = () => {
   return (
     <div style={{ maxWidth: 840, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 'var(--space-8)' }}>
       <div>
         <h1 style={{ fontSize: 'var(--text-3xl)', fontWeight: 700, marginBottom: 'var(--space-2)' }}>
-          參與守則與常見問題
+          客廳約定與常見問答
         </h1>
         <p style={{ color: 'var(--ink-secondary)', fontSize: 'var(--text-lg)' }}>
-          攜手基地重視安全、包容與自主權。請在報名前詳閱我們的社群規範。
+          攜手基地重視放鬆、互相尊重與每個人的自主節奏。加入小隊前，請先看看我們的客廳約定。
         </p>
       </div>
 
-      {/* 社群安全守則 (BR-01 ~ BR-09) */}
+      {/* 客廳約定 */}
       <section className="card" aria-labelledby="rules-section-title">
         <h2 id="rules-section-title" style={{ fontSize: 'var(--text-xl)', display: 'flex', alignItems: 'center', gap: 8, marginBottom: 'var(--space-4)', color: 'var(--primary)' }}>
           <ShieldCheck size={28} weight="fill" />
-          <span>社群安全與參與守則 (BR)</span>
+          <span>五大客廳約定</span>
         </h2>
 
         <ol style={{ paddingLeft: 'var(--space-6)', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', lineHeight: 1.8 }}>
@@ -32,11 +32,11 @@ export const Rules: React.FC = () => {
 
         <div style={{ marginTop: 'var(--space-6)', padding: 'var(--space-4)', backgroundColor: 'var(--primary-light)', borderRadius: 'var(--radius-md)', fontSize: 'var(--text-sm)', color: 'var(--ink-secondary)' }}>
           <strong>隱私保護承諾：</strong>
-          報名時所填寫之聯絡方式僅供服務團隊進行一對一可及性確認及緊急聯絡使用。我們絕不會向其他成員公開您的私人通訊帳號或醫療狀況。
+          預約時所填寫的聯絡方式僅供小幫手一對一調校連線手感與緊急聯繫使用。我們絕不向其他成員公開你的私人通訊帳號或個人隱私。
         </div>
       </section>
 
-      {/* 常見問題 FAQ (FR-01) */}
+      {/* 常見問題 FAQ */}
       <section aria-labelledby="faq-section-title">
         <h2 id="faq-section-title" style={{ fontSize: 'var(--text-xl)', display: 'flex', alignItems: 'center', gap: 8, marginBottom: 'var(--space-4)' }}>
           <Question size={28} weight="fill" color="var(--primary)" />
@@ -66,7 +66,7 @@ export const Rules: React.FC = () => {
 
       <div style={{ textAlign: 'center', marginTop: 'var(--space-4)' }}>
         <Link to="/register" className="btn-primary" style={{ textDecoration: 'none' }}>
-          <span>了解完畢，前往填寫報名表</span>
+          <span>了解完畢，立即預約小隊</span>
           <ArrowRight size={20} weight="bold" />
         </Link>
       </div>
