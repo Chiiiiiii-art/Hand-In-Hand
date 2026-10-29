@@ -1,15 +1,18 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAppStore } from './store';
 import { Shell } from './components/Shell';
 
-// 參與者頁面
-import { Home } from './pages/participant/Home';
+// 參與者頁面 (PRD v2.0: / 即為小組基地)
+import { BaseHome } from './pages/participant/BaseHome';
 import { Rules } from './pages/participant/Rules';
 import { Register } from './pages/participant/Register';
 import { MyStatus } from './pages/participant/MyStatus';
 import { ReportIssue } from './pages/participant/ReportIssue';
 import { ParticipantFeedback } from './pages/participant/Feedback';
+
+// 主持人頁面 (PRD v2.0 新增)
+import { HostConsole } from './pages/host/HostConsole';
+import { TaskOrchestrator } from './pages/host/TaskOrchestrator';
 
 // 管理者頁面
 import { AdminDashboard } from './pages/admin/Dashboard';
@@ -26,13 +29,17 @@ export const App: React.FC = () => {
   return (
     <Shell>
       <Routes>
-        {/* 參與者端路由 */}
-        <Route path="/" element={<Home />} />
+        {/* 參與者端核心路由 */}
+        <Route path="/" element={<BaseHome />} />
         <Route path="/rules" element={<Rules />} />
         <Route path="/register" element={<Register />} />
         <Route path="/my-status" element={<MyStatus />} />
         <Route path="/report-issue" element={<ReportIssue />} />
         <Route path="/feedback" element={<ParticipantFeedback />} />
+
+        {/* 主持人端路由 (PRD v2.0) */}
+        <Route path="/host/console" element={<HostConsole />} />
+        <Route path="/host/tasks" element={<TaskOrchestrator />} />
 
         {/* 管理者端路由 */}
         <Route path="/admin/dashboard" element={<AdminDashboard />} />

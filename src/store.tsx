@@ -11,7 +11,16 @@ import {
   SessionStatus,
   AttendanceStatus,
   IssueStatus,
-  AccessibilityChecklist
+  AccessibilityChecklist,
+  GroupBaseWorld,
+  CoopTask,
+  TaskProposal,
+  ContributionModeId,
+  HelpRequestRecord,
+  ReflectionQuestion,
+  NextPlanOption,
+  OfflineActivityProposal,
+  ScenarioStepNumber
 } from './types';
 import {
   INITIAL_APPLICATIONS,
@@ -19,12 +28,26 @@ import {
   INITIAL_SESSIONS,
   INITIAL_FEEDBACKS,
   INITIAL_ISSUES,
-  INITIAL_FOLLOW_UPS
+  INITIAL_FOLLOW_UPS,
+  INITIAL_BASE_WORLDS,
+  INITIAL_COOP_TASKS,
+  INITIAL_HELP_REQUESTS,
+  INITIAL_REFLECTIONS,
+  INITIAL_NEXT_PLAN_OPTIONS,
+  INITIAL_OFFLINE_PROPOSALS
 } from './seed';
 
 interface AppState {
   currentRole: CurrentRole;
-  currentParticipantId: string; // 當前視角主角，預設 'app-01' (小禾)
+  currentParticipantId: string; // 預設主角 'app-01' (小禾)
+  currentScenarioStep: ScenarioStepNumber; // PRD 第 9 節情境步數 (1-9)
+  isScenarioGuideOpen: boolean;
+  baseWorlds: GroupBaseWorld[];
+  coopTasks: CoopTask[];
+  helpRequests: HelpRequestRecord[];
+  reflections: ReflectionQuestion[];
+  nextPlanOptions: NextPlanOption[];
+  offlineProposals: OfflineActivityProposal[];
   applications: Application[];
   groups: Group[];
   sessions: Session[];
@@ -38,10 +61,23 @@ interface AppState {
 type Action =
   | { type: 'SET_ROLE'; role: CurrentRole }
   | { type: 'SET_PARTICIPANT_ID'; id: string }
+  | { type: 'SET_SCENARIO_STEP'; step: ScenarioStepNumber }
+  | { type: 'TOGGLE_SCENARIO_GUIDE' }
   | { type: 'TOGGLE_DEMO_GUIDE' }
   | { type: 'SET_DEMO_GUIDE_OPEN'; open: boolean }
   | { type: 'SET_TOAST'; message: string | null }
   | { type: 'RESET_DATA' }
+  // PRD v2.0 友誼支持與合作任務 Actions
+  | { type: 'VOTE_PROPOSAL'; taskId: string; proposalId: string; applicantId: string }
+  | { type: 'SUBMIT_PROPOSAL'; taskId: string; proposal: Omit<TaskProposal, 'id' | 'votes'> }
+  | { type: 'CHANGE_CONTRIBUTION_MODE'; applicantId: string; mode: ContributionModeId }
+  | { type: 'SUBMIT_HELP_REQUEST'; applicantId: string; sessionId: string; requestType: HelpRequestRecord['requestType']; note: string }
+  | { type: 'RESPOND_HELP_REQUEST'; id: string; hostReply: string }
+  | { type: 'SUBMIT_REFLECTION_ANSWER'; questionId: string; applicantId: string; text: string }
+  | { type: 'VOTE_NEXT_PLAN'; optionId: string; applicantId: string }
+  | { type: 'VOTE_OFFLINE_PROPOSAL'; proposalId: string; applicantId: string; choice: '有興趣' | '暫不考慮' | '想先繼續線上活動' }
+  | { type: 'UPDATE_TASK_PROGRESS'; taskId: string; progress: number; status?: CoopTask['status'] }
+  // 原有行政與服務管理 Actions
   | { type: 'SUBMIT_APPLICATION'; application: Omit<Application, 'id' | 'submittedAt' | 'status' | 'accessibilityCheck' | 'adminNotes'> }
   | { type: 'UPDATE_ACCESSIBILITY_CHECK'; id: string; checks: Partial<AccessibilityChecklist> }
   | { type: 'UPDATE_APPLICATION_STATUS'; id: string; status: ApplicationStatus; notes?: string }
@@ -54,13 +90,17 @@ type Action =
   | { type: 'UPDATE_ISSUE_STATUS'; id: string; status: IssueStatus; adminResponse?: string; followUpPlan?: string }
   | { type: 'SUBMIT_FOLLOW_UP'; record: FollowUpRecord };
 
-const STORAGE_KEY = 'hand_in_hand_state_v1';
+const STORAGE_KEY = 'hand_in_hand_state_v2';
 
 function getInitialState(): AppState {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
-      return JSON.parse(saved);
+      const parsed = JSON.parse(saved);
+      // 確保 PRD v2.0 欄位存在
+      if (parsed.baseWorlds && parsed.coopTasks && parsed.currentScenarioStep) {
+        return parsed;
+      }
     }
   } catch (e) {
     console.error('Failed to load state from localStorage', e);
@@ -69,13 +109,21 @@ function getInitialState(): AppState {
   return {
     currentRole: 'participant',
     currentParticipantId: 'app-01',
+    currentScenarioStep: 1,
+    isScenarioGuideOpen: true,
+    baseWorlds: INITIAL_BASE_WORLDS,
+    coopTasks: INITIAL_COOP_TASKS,
+    helpRequests: INITIAL_HELP_REQUESTS,
+    reflections: INITIAL_REFLECTIONS,
+    nextPlanOptions: INITIAL_NEXT_PLAN_OPTIONS,
+    offlineProposals: INITIAL_OFFLINE_PROPOSALS,
     applications: INITIAL_APPLICATIONS,
     groups: INITIAL_GROUPS,
     sessions: INITIAL_SESSIONS,
     feedbacks: INITIAL_FEEDBACKS,
     issues: INITIAL_ISSUES,
     followUps: INITIAL_FOLLOW_UPS,
-    isDemoGuideOpen: true,
+    isDemoGuideOpen: false,
     toastMessage: null,
   };
 }
@@ -88,11 +136,17 @@ function appReducer(state: AppState, action: Action): AppState {
     case 'SET_PARTICIPANT_ID':
       return { ...state, currentParticipantId: action.id };
 
-    case 'TOGGLE_DEMO_GUIDE':
-      return { ...state, isDemoGuideOpen: !state.isDemoGuideOpen };
+    case 'SET_SCENARIO_STEP':
+      return { ...state, currentScenarioStep: action.step };
+
+    case 'TOGGLE_SCENARIO_GUIDE':
+      return { ...state, isScenarioGuideOpen: !state.isScenarioGuideOpen };
 
     case 'SET_DEMO_GUIDE_OPEN':
       return { ...state, isDemoGuideOpen: action.open };
+
+    case 'TOGGLE_DEMO_GUIDE':
+      return { ...state, isDemoGuideOpen: !state.isDemoGuideOpen };
 
     case 'SET_TOAST':
       return { ...state, toastMessage: action.message };
@@ -102,17 +156,234 @@ function appReducer(state: AppState, action: Action): AppState {
       return {
         currentRole: 'participant',
         currentParticipantId: 'app-01',
+        currentScenarioStep: 1,
+        isScenarioGuideOpen: true,
+        baseWorlds: INITIAL_BASE_WORLDS,
+        coopTasks: INITIAL_COOP_TASKS,
+        helpRequests: INITIAL_HELP_REQUESTS,
+        reflections: INITIAL_REFLECTIONS,
+        nextPlanOptions: INITIAL_NEXT_PLAN_OPTIONS,
+        offlineProposals: INITIAL_OFFLINE_PROPOSALS,
         applications: INITIAL_APPLICATIONS,
         groups: INITIAL_GROUPS,
         sessions: INITIAL_SESSIONS,
         feedbacks: INITIAL_FEEDBACKS,
         issues: INITIAL_ISSUES,
         followUps: INITIAL_FOLLOW_UPS,
-        isDemoGuideOpen: true,
-        toastMessage: '已重置為初始示範資料！',
+        isDemoGuideOpen: false,
+        toastMessage: '已重置為 PRD v2.0 初始示範資料！',
       };
     }
 
+    // 提案投票 (FR-04)
+    case 'VOTE_PROPOSAL': {
+      const updatedTasks = state.coopTasks.map(task => {
+        if (task.id !== action.taskId) return task;
+        const updatedProposals = task.proposals.map(prop => {
+          const hasVoted = prop.votes.includes(action.applicantId);
+          if (prop.id === action.proposalId) {
+            // 切換投票狀態
+            const newVotes = hasVoted
+              ? prop.votes.filter(id => id !== action.applicantId)
+              : [...prop.votes, action.applicantId];
+            return { ...prop, votes: newVotes };
+          } else {
+            // 單選投票：移除其他提案的票
+            return {
+              ...prop,
+              votes: prop.votes.filter(id => id !== action.applicantId)
+            };
+          }
+        });
+
+        // 重新計算最高票提案
+        let leadingPropId = task.activeProposalId;
+        let highestVotes = -1;
+        for (const p of updatedProposals) {
+          if (p.votes.length > highestVotes) {
+            highestVotes = p.votes.length;
+            leadingPropId = p.id;
+          }
+        }
+
+        return {
+          ...task,
+          proposals: updatedProposals,
+          activeProposalId: leadingPropId
+        };
+      });
+
+      return {
+        ...state,
+        coopTasks: updatedTasks,
+        toastMessage: '已登記投票！小組共同決策狀態已即時更新。'
+      };
+    }
+
+    // 新增提案 (FR-04)
+    case 'SUBMIT_PROPOSAL': {
+      const newProposal: TaskProposal = {
+        ...action.proposal,
+        id: `prop-${Date.now().toString().slice(-4)}`,
+        votes: [action.proposal.applicantId]
+      };
+      const updatedTasks = state.coopTasks.map(task => {
+        if (task.id !== action.taskId) return task;
+        return {
+          ...task,
+          proposals: [newProposal, ...task.proposals],
+          activeProposalId: newProposal.id
+        };
+      });
+      return {
+        ...state,
+        coopTasks: updatedTasks,
+        toastMessage: `提案【${newProposal.title}】已提交並加入小組討論！`
+      };
+    }
+
+    // 切換貢獻方式 (FR-05: 不按診斷分派，參與者自主切換)
+    case 'CHANGE_CONTRIBUTION_MODE': {
+      const updatedApps = state.applications.map(app => {
+        if (app.id !== action.applicantId) return app;
+        return { ...app, currentContributionMode: action.mode };
+      });
+      return {
+        ...state,
+        applications: updatedApps,
+        toastMessage: '已自主切換參與方式！共同成果將如實記錄您的協作貢獻。'
+      };
+    }
+
+    // 求助與暫停 (FR-06)
+    case 'SUBMIT_HELP_REQUEST': {
+      const applicant = state.applications.find(a => a.id === action.applicantId);
+      const nickname = applicant ? applicant.nickname : '成員';
+      const now = new Date();
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      const newHelp: HelpRequestRecord = {
+        id: `help-${Date.now().toString().slice(-4)}`,
+        applicantId: action.applicantId,
+        nickname,
+        sessionId: action.sessionId,
+        requestType: action.requestType,
+        note: action.note,
+        submittedAt: `2026-10-28 ${timeStr}`,
+        status: '待回應'
+      };
+      return {
+        ...state,
+        helpRequests: [newHelp, ...state.helpRequests],
+        toastMessage: '已向主持人發出求助訊號！主持人控制台將即時接收與支援。'
+      };
+    }
+
+    // 主持人回應求助 (FR-06, FR-12)
+    case 'RESPOND_HELP_REQUEST': {
+      const now = new Date();
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      const updatedRequests = state.helpRequests.map(r => {
+        if (r.id !== action.id) return r;
+        return {
+          ...r,
+          status: '已由主持人支援' as const,
+          hostReply: action.hostReply,
+          handledAt: `2026-10-28 ${timeStr}`
+        };
+      });
+      return {
+        ...state,
+        helpRequests: updatedRequests,
+        toastMessage: '已完成求助支援！參與者端已收到確認通知。'
+      };
+    }
+
+    // 回顧與共同記憶 (FR-07, FR-08)
+    case 'SUBMIT_REFLECTION_ANSWER': {
+      const applicant = state.applications.find(a => a.id === action.applicantId);
+      const nickname = applicant ? applicant.nickname : '成員';
+      const now = new Date();
+      const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+      const updatedReflections = state.reflections.map(r => {
+        if (r.id !== action.questionId) return r;
+        const exists = r.answers.some(ans => ans.applicantId === action.applicantId);
+        const filtered = r.answers.filter(ans => ans.applicantId !== action.applicantId);
+        return {
+          ...r,
+          answers: [
+            ...filtered,
+            {
+              applicantId: action.applicantId,
+              nickname,
+              text: action.text,
+              submittedAt: `2026-10-28 ${timeStr}`
+            }
+          ]
+        };
+      });
+      return {
+        ...state,
+        reflections: updatedReflections,
+        toastMessage: '感謝您的回顧想法！已收錄於小組共同記憶冊。'
+      };
+    }
+
+    // 下次活動目標共同計畫 (FR-09)
+    case 'VOTE_NEXT_PLAN': {
+      const updatedOptions = state.nextPlanOptions.map(opt => {
+        const hasVoted = opt.votes.includes(action.applicantId);
+        if (opt.id === action.optionId) {
+          const newVotes = hasVoted
+            ? opt.votes.filter(id => id !== action.applicantId)
+            : [...opt.votes, action.applicantId];
+          return { ...opt, votes: newVotes };
+        } else {
+          return {
+            ...opt,
+            votes: opt.votes.filter(id => id !== action.applicantId)
+          };
+        }
+      });
+      return {
+        ...state,
+        nextPlanOptions: updatedOptions,
+        toastMessage: '已為下次小組目標投票！共同計畫將接續下週活動。'
+      };
+    }
+
+    // 自願線下／活動外探索提案 (FR-15: 尊重自主意願)
+    case 'VOTE_OFFLINE_PROPOSAL': {
+      const updatedProposals = state.offlineProposals.map(prop => {
+        if (prop.id !== action.proposalId) return prop;
+        return {
+          ...prop,
+          responses: {
+            ...prop.responses,
+            [action.applicantId]: action.choice
+          }
+        };
+      });
+      return {
+        ...state,
+        offlineProposals: updatedProposals,
+        toastMessage: `已登記您的意願【${action.choice}】。選擇暫不考慮絕不影響線上活動參與權！`
+      };
+    }
+
+    // 任務進度模擬更新
+    case 'UPDATE_TASK_PROGRESS': {
+      const updatedTasks = state.coopTasks.map(t => {
+        if (t.id !== action.taskId) return t;
+        return {
+          ...t,
+          stepProgress: action.progress,
+          status: action.status || t.status
+        };
+      });
+      return { ...state, coopTasks: updatedTasks };
+    }
+
+    // 原有報名提交
     case 'SUBMIT_APPLICATION': {
       const now = new Date();
       const dateStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
@@ -122,6 +393,7 @@ function appReducer(state: AppState, action: Action): AppState {
         id: newId,
         submittedAt: dateStr,
         status: '待確認',
+        currentContributionMode: 'direct_build',
         accessibilityCheck: {
           deviceConfirmed: false,
           controlsConfirmed: false,
@@ -170,14 +442,12 @@ function appReducer(state: AppState, action: Action): AppState {
       const applicant = state.applications.find(a => a.id === action.applicantId);
       if (!applicant) return state;
 
-      // 更新申請者狀態為已入組
       const updatedApps = state.applications.map(a =>
         a.id === action.applicantId
           ? { ...a, status: '已入組' as ApplicationStatus, assignedGroupId: action.groupId }
           : a
       );
 
-      // 更新小組成員清單
       const updatedGroups = state.groups.map(g => {
         if (g.id !== action.groupId) return g;
         const exists = g.members.some(m => m.applicantId === action.applicantId);

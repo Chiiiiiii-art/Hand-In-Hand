@@ -1,4 +1,4 @@
-// PRD 名詞與狀態定義（附錄 A & 第 5 章 FR）
+// PRD 名詞與狀態定義（附錄 A & 第 5 章 FR & v2.0 友誼支持系統架構）
 
 export type ApplicationStatus = '待確認' | '需後續聯繫' | '可安排' | '已入組';
 
@@ -35,6 +35,7 @@ export interface Application {
   accessibilityCheck: AccessibilityChecklist;
   adminNotes: string;         // 管理者備註（限後台）
   assignedGroupId?: string;   // 所屬固定小組 ID
+  currentContributionMode?: ContributionModeId; // 當前選擇的參與方式 (FR-05)
 }
 
 export interface GroupMember {
@@ -46,7 +47,7 @@ export interface GroupMember {
 
 export interface Group {
   id: string;
-  name: string;               // 例如：青鳥組、種子組
+  name: string;               // 例如：翠鳥組、種子組
   fixedTimeSlot: string;      // 例如：每週三 19:30 - 21:00
   hostName: string;           // 活動主持人
   backupContact: string;      // 備援聯絡管道
@@ -110,7 +111,135 @@ export interface FollowUpRecord {
   feedbackText?: string;
 }
 
-export type CurrentRole = 'participant' | 'admin';
+// 角色切換：三角色（參與者、主持人、服務管理者）
+export type CurrentRole = 'participant' | 'host' | 'admin';
+
+// ==========================================
+// PRD v2.0 友誼支持系統新增模型
+// ==========================================
+
+// FR-02 共同世界成果
+export interface SharedDeliverable {
+  id: string;
+  title: string;
+  weekNumber: number;
+  description: string;
+  category: '地標建築' | '無障礙步道' | '休閒空間' | '收藏展示';
+  completedAt: string;
+  imageTag: 'garden' | 'pavilion' | 'entrance' | 'library';
+  highlight: string;
+}
+
+// FR-01 共同世界基地
+export interface GroupBaseWorld {
+  groupId: string;
+  worldName: string;
+  worldTheme: string;
+  serverAddress: string;
+  versionInfo: string;
+  pastDeliverables: SharedDeliverable[];
+  pendingTasksSummary: string[];
+}
+
+// FR-05 多元貢獻方式
+export type ContributionModeId = 'direct_build' | 'design_choice' | 'resource_sort' | 'text_voice_coord';
+
+export interface ContributionModeOption {
+  id: ContributionModeId;
+  title: string;
+  shortDesc: string;
+  inputDescription: string;
+  iconName: string;
+}
+
+// FR-04 提案與共同決策
+export interface TaskProposal {
+  id: string;
+  taskId: string;
+  applicantId: string;
+  authorNickname: string;
+  title: string;
+  concept: string;
+  accessibilityFeature: string;
+  votes: string[]; // 投票成員的 applicantId 列表
+}
+
+// FR-03 合作任務板
+export interface CoopTask {
+  id: string;
+  sessionId: string;
+  groupId: string;
+  weekNumber: number;
+  title: string;
+  teamGoal: string;
+  status: '討論提案中' | '進行協作中' | '完成待回顧' | '已歸檔';
+  activeProposalId?: string; // 選定的提案
+  proposals: TaskProposal[];
+  contributionOptions: ContributionModeOption[];
+  stepProgress: number; // 0-100%
+  completedSummary?: string;
+}
+
+// FR-06 求助／暫停／切換方式雙向紀錄
+export interface HelpRequestRecord {
+  id: string;
+  applicantId: string;
+  nickname: string;
+  sessionId: string;
+  requestType: '換參與方式' | '操作卡關' | '需要小歇' | '其他支援';
+  note: string;
+  submittedAt: string;
+  status: '待回應' | '已由主持人支援';
+  hostReply?: string;
+  handledAt?: string;
+}
+
+// FR-07 低壓力交流與回顧（可跳過）
+export interface ReflectionQuestion {
+  id: string;
+  sessionId: string;
+  question: string;
+  category: '共同決策' | '互助時刻' | '下次期待';
+  answers: {
+    applicantId: string;
+    nickname: string;
+    text: string;
+    submittedAt: string;
+  }[];
+}
+
+// FR-09 下次活動共同計畫
+export interface NextPlanOption {
+  id: string;
+  groupId: string;
+  targetTitle: string;
+  description: string;
+  votes: string[]; // applicantId
+}
+
+// FR-15 自願的線下／活動外探索提案（PoC 模擬，明確標示待確認）
+export interface OfflineActivityProposal {
+  id: string;
+  groupId: string;
+  title: string;
+  description: string;
+  transitStatus: string;       // 待確認捷運/無障礙專車路線
+  accessibilityStatus: string; // 場地無障礙設施待專員查核
+  feeStatus: string;           // 費用/門票待確認
+  isSimulation: boolean;       // 模擬標示
+  responses: Record<string, '有興趣' | '暫不考慮' | '想先繼續線上活動'>; // applicantId -> 選擇
+}
+
+// PRD 第 9 節：9 步驟端到端演示情境
+export type ScenarioStepNumber = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+
+export interface ScenarioStepMeta {
+  step: ScenarioStepNumber;
+  title: string;
+  shortDesc: string;
+  targetRole: CurrentRole;
+  actionHint: string;
+}
 
 // 狀態解釋字典（FR-03 規定：每種狀態都有對應說明；不以沒有說明的代碼顯示）
 export const STATUS_DESCRIPTIONS: Record<string, { label: string; desc: string; variant: 'info' | 'warning' | 'success' | 'neutral' | 'danger' }> = {

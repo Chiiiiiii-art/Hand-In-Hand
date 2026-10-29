@@ -1,4 +1,14 @@
-import { Application, Session, Feedback, IssueReport, FollowUpRecord } from './types';
+import {
+  Application,
+  Session,
+  Feedback,
+  IssueReport,
+  FollowUpRecord,
+  CoopTask,
+  HelpRequestRecord,
+  NextPlanOption,
+  OfflineActivityProposal
+} from './types';
 
 export interface ServiceMetrics {
   totalApplications: number;
@@ -44,13 +54,49 @@ export interface ServiceMetrics {
   };
 }
 
+export interface GroupInteractionMetrics {
+  totalTasksWithDecisions: number;
+  totalProposalsSubmitted: number;
+  proposalVoteParticipationRate: {
+    percentage: number;
+    votedMembersCount: number;
+    activeMembersCount: number;
+    formula: string;
+  };
+  contributionModeDistribution: {
+    direct_build: number;
+    design_choice: number;
+    resource_sort: number;
+    text_voice_coord: number;
+  };
+  helpRequestResponseRate: {
+    percentage: number;
+    handledCount: number;
+    totalRequests: number;
+    formula: string;
+  };
+  nextPlanConsensus: {
+    leadingTarget: string;
+    totalVotes: number;
+    participationRate: number;
+    formula: string;
+  };
+  offlineExploration: {
+    interestedCount: number;
+    continueOnlineCount: number;
+    notConsideringCount: number;
+    note: string;
+  };
+}
+
 /**
- * 計算 PRD 第 9 章定義的所有指標
+ * 計算 PRD 第 8 章與第 9 章定義的所有指標
  * 嚴格遵循口徑：
+ * - 示範資料標註（非實際服務成效）
  * - 缺席不等於不感興趣
  * - 未回覆與負面回饋分開
  * - 取消場次排除
- * - 重複參與：至少參與兩場 ÷ 至少被安排一場
+ * - 絕不輸出個人友誼分數與社交排名
  */
 export function calculateMetrics(
   applications: Application[],
@@ -69,7 +115,6 @@ export function calculateMetrics(
   let cancelledSessionsExcluded = 0;
 
   for (const session of sessions) {
-    // 只有已結束且有記錄的場次計算
     const attendanceEntries = Object.values(session.attendance);
     for (const status of attendanceEntries) {
       if (status === '出席') {
@@ -165,6 +210,126 @@ export function calculateMetrics(
       technical: technicalIssues,
       safety: safetyIssues,
       other: otherIssues
+    }
+  };
+}
+
+/**
+ * PRD v2.0 FR-17: 小組層級互動摘要計算
+ * 專注於小組協作、決策、多元參與方式與求助處理，嚴禁個人排行
+ */
+export function calculateGroupInteractionMetrics(
+  tasks: CoopTask[],
+  applications: Application[],
+  helpRequests: HelpRequestRecord[],
+  nextPlanOptions: NextPlanOption[],
+  offlineProposals: OfflineActivityProposal[]
+): GroupInteractionMetrics {
+  const activeMembers = applications.filter(a => a.status === '已入組');
+  const activeMemberCount = activeMembers.length;
+
+  let totalTasksWithDecisions = 0;
+  let totalProposalsSubmitted = 0;
+  const uniqueVoterSet = new Set<string>();
+
+  for (const task of tasks) {
+    totalProposalsSubmitted += task.proposals.length;
+    let taskHasVotes = false;
+    for (const proposal of task.proposals) {
+      if (proposal.votes.length > 0) {
+        taskHasVotes = true;
+        proposal.votes.forEach(voterId => uniqueVoterSet.add(voterId));
+      }
+    }
+    if (taskHasVotes || task.activeProposalId) {
+      totalTasksWithDecisions++;
+    }
+  }
+
+  const proposalVoteParticipationRate = activeMemberCount > 0
+    ? Math.round((uniqueVoterSet.size / activeMemberCount) * 100)
+    : 0;
+
+  // 貢獻方式分佈
+  const contributionModeDistribution = {
+    direct_build: 0,
+    design_choice: 0,
+    resource_sort: 0,
+    text_voice_coord: 0
+  };
+
+  for (const member of activeMembers) {
+    const mode = member.currentContributionMode || 'direct_build';
+    if (mode in contributionModeDistribution) {
+      contributionModeDistribution[mode]++;
+    }
+  }
+
+  // 求助與暫停回應率
+  const totalHelpRequests = helpRequests.length;
+  const handledHelpRequests = helpRequests.filter(r => r.status === '已由主持人支援').length;
+  const helpResponsePercentage = totalHelpRequests > 0
+    ? Math.round((handledHelpRequests / totalHelpRequests) * 100)
+    : 100;
+
+  // 下次活動計畫共識
+  let leadingTarget = '尚無提案';
+  let maxVotes = -1;
+  const planVoterSet = new Set<string>();
+
+  for (const opt of nextPlanOptions) {
+    opt.votes.forEach(id => planVoterSet.add(id));
+    if (opt.votes.length > maxVotes) {
+      maxVotes = opt.votes.length;
+      leadingTarget = opt.targetTitle;
+    }
+  }
+
+  const nextPlanParticipation = activeMemberCount > 0
+    ? Math.round((planVoterSet.size / activeMemberCount) * 100)
+    : 0;
+
+  // 線下活動自願探索（尊重成員意願，拒絕與暫不考慮不扣分）
+  let interestedCount = 0;
+  let continueOnlineCount = 0;
+  let notConsideringCount = 0;
+
+  if (offlineProposals.length > 0) {
+    const latestProposal = offlineProposals[0];
+    for (const res of Object.values(latestProposal.responses)) {
+      if (res === '有興趣') interestedCount++;
+      else if (res === '想先繼續線上活動') continueOnlineCount++;
+      else if (res === '暫不考慮') notConsideringCount++;
+    }
+  }
+
+  return {
+    totalTasksWithDecisions,
+    totalProposalsSubmitted,
+    proposalVoteParticipationRate: {
+      percentage: proposalVoteParticipationRate,
+      votedMembersCount: uniqueVoterSet.size,
+      activeMembersCount: activeMemberCount,
+      formula: '參與提案投票成員數 ÷ 小組已入組總成員數'
+    },
+    contributionModeDistribution,
+    helpRequestResponseRate: {
+      percentage: helpResponsePercentage,
+      handledCount: handledHelpRequests,
+      totalRequests: totalHelpRequests,
+      formula: '主持人已支援求助數 ÷ 總求助提出數'
+    },
+    nextPlanConsensus: {
+      leadingTarget,
+      totalVotes: planVoterSet.size,
+      participationRate: nextPlanParticipation,
+      formula: '參與下次計畫投票人數 ÷ 小組已入組總成員數'
+    },
+    offlineExploration: {
+      interestedCount,
+      continueOnlineCount,
+      notConsideringCount,
+      note: '所有線下探索均標記為待確認；拒絕或暫不考慮絕不視為負面指標'
     }
   };
 }
