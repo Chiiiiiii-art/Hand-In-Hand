@@ -154,14 +154,14 @@ export const Home: React.FC = () => {
           <blockquote className="card" style={{ fontStyle: 'italic', color: 'var(--ink-primary)' }}>
             “本來很擔心自己手部動作慢會拖累大家，但引導員和阿木都很有耐心地等我打字，第 2 週我們合力完成水上涼亭時，真的超有成就感！”
             <footer style={{ marginTop: 8, fontStyle: 'normal', fontWeight: 700, color: 'var(--primary)' }}>
-              — 小禾（文字溝通為主，青鳥組隊友）
+              — 小禾（文字溝通為主，翠鳥組成員）
             </footer>
           </blockquote>
 
           <blockquote className="card" style={{ fontStyle: 'italic', color: 'var(--ink-primary)' }}>
             “很久沒有跟固定的朋友每週相約了。在遊戲裡分工合作，不用出門也不用煩惱無障礙交通，像真的回到朋友家客廳聊天一樣放鬆。”
             <footer style={{ marginTop: 8, fontStyle: 'normal', fontWeight: 700, color: 'var(--primary)' }}>
-              — 阿木（特製手把操作，青鳥組隊友）
+              — 阿木（手把操作，翠鳥組成員）
             </footer>
           </blockquote>
         </div>

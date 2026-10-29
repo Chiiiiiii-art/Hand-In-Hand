@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAppStore } from '../store';
-import { User, ShieldCheck, ArrowClockwise } from '@phosphor-icons/react';
+import { User, UsersThree, ShieldCheck, ArrowClockwise } from '@phosphor-icons/react';
 
 export const RoleSwitch: React.FC = () => {
   const { state, dispatch } = useAppStore();
@@ -20,47 +20,86 @@ export const RoleSwitch: React.FC = () => {
         borderRadius: 'var(--radius-full)',
         border: '1.5px solid var(--border)',
         fontSize: 'var(--text-sm)',
+        flexWrap: 'wrap',
       }}
     >
       <span style={{ color: 'var(--ink-secondary)', fontWeight: 600, paddingLeft: 4 }}>
-        視角：
+        角色視角：
       </span>
 
+      {/* 參與者角色 */}
       <button
         type="button"
         onClick={() => dispatch({ type: 'SET_ROLE', role: 'participant' })}
         style={{
-          minHeight: 36,
+          minHeight: 34,
           padding: '0 12px',
           borderRadius: 'var(--radius-full)',
           background: state.currentRole === 'participant' ? 'var(--primary)' : 'transparent',
           color: state.currentRole === 'participant' ? '#FFFFFF' : 'var(--ink-primary)',
           fontSize: 'var(--text-sm)',
+          border: 'none',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 6,
+          cursor: 'pointer',
         }}
         aria-pressed={state.currentRole === 'participant'}
       >
         <User size={16} weight="bold" aria-hidden="true" />
-        <span>隊友視角</span>
+        <span>參與者</span>
         {state.currentRole === 'participant' && currentApplicant && (
           <span style={{ opacity: 0.9, fontSize: '0.85em' }}>（{currentApplicant.nickname}）</span>
         )}
       </button>
 
+      {/* 主持人角色 (PRD v2.0 專屬) */}
+      <button
+        type="button"
+        onClick={() => dispatch({ type: 'SET_ROLE', role: 'host' })}
+        style={{
+          minHeight: 34,
+          padding: '0 12px',
+          borderRadius: 'var(--radius-full)',
+          background: state.currentRole === 'host' ? 'var(--primary)' : 'transparent',
+          color: state.currentRole === 'host' ? '#FFFFFF' : 'var(--ink-primary)',
+          fontSize: 'var(--text-sm)',
+          border: 'none',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 6,
+          cursor: 'pointer',
+        }}
+        aria-pressed={state.currentRole === 'host'}
+      >
+        <UsersThree size={16} weight="bold" aria-hidden="true" />
+        <span>引導主持人</span>
+        {state.currentRole === 'host' && (
+          <span style={{ opacity: 0.9, fontSize: '0.85em' }}>（陳主持）</span>
+        )}
+      </button>
+
+      {/* 服務管理者角色 */}
       <button
         type="button"
         onClick={() => dispatch({ type: 'SET_ROLE', role: 'admin' })}
         style={{
-          minHeight: 36,
+          minHeight: 34,
           padding: '0 12px',
           borderRadius: 'var(--radius-full)',
           background: state.currentRole === 'admin' ? 'var(--primary)' : 'transparent',
           color: state.currentRole === 'admin' ? '#FFFFFF' : 'var(--ink-primary)',
           fontSize: 'var(--text-sm)',
+          border: 'none',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 6,
+          cursor: 'pointer',
         }}
         aria-pressed={state.currentRole === 'admin'}
       >
         <ShieldCheck size={16} weight="bold" aria-hidden="true" />
-        <span>後台管理</span>
+        <span>服務管理</span>
       </button>
 
       {/* 切換測試隊友視角下拉 */}
@@ -70,13 +109,14 @@ export const RoleSwitch: React.FC = () => {
           onChange={(e) => dispatch({ type: 'SET_PARTICIPANT_ID', id: e.target.value })}
           aria-label="切換隊友身分"
           style={{
-            minHeight: 36,
+            minHeight: 34,
             width: 'auto',
             padding: '2px 8px',
             fontSize: 'var(--text-xs)',
             background: 'var(--surface)',
             border: '1px solid var(--border)',
             borderRadius: 'var(--radius-full)',
+            cursor: 'pointer',
           }}
         >
           {state.applications.map(app => (
@@ -91,16 +131,22 @@ export const RoleSwitch: React.FC = () => {
       <button
         type="button"
         onClick={() => {
-          if (window.confirm('確定要將所有申請、場次與回報資料重置為初始示範狀態嗎？')) {
+          if (window.confirm('確定要將所有小組世界、任務與記錄重置為初始示範狀態嗎？')) {
             dispatch({ type: 'RESET_DATA' });
           }
         }}
         title="重置所有資料為初始示範狀態"
         style={{
-          minHeight: 36,
+          minHeight: 34,
           padding: '0 8px',
           color: 'var(--ink-secondary)',
           fontSize: 'var(--text-xs)',
+          background: 'transparent',
+          border: 'none',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 4,
+          cursor: 'pointer',
         }}
       >
         <ArrowClockwise size={16} aria-hidden="true" />

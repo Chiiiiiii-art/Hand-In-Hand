@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAppStore } from '../../store';
-import { calculateMetrics } from '../../metrics';
+import { calculateMetrics, calculateGroupInteractionMetrics } from '../../metrics';
 import { SimBadge } from '../../components/SimBadge';
 import {
   UsersThree,
@@ -12,7 +12,8 @@ import {
   Copy,
   Bell,
   Sparkle,
-  ArrowSquareOut
+  ChartBar,
+  Compass
 } from '@phosphor-icons/react';
 
 export const AdminDashboard: React.FC = () => {
@@ -26,55 +27,63 @@ export const AdminDashboard: React.FC = () => {
     state.followUps
   );
 
-  // 匯出摘要至剪貼簿 (FR-16)
+  const groupMetrics = calculateGroupInteractionMetrics(
+    state.coopTasks,
+    state.applications,
+    state.helpRequests,
+    state.nextPlanOptions,
+    state.offlineProposals
+  );
+
+  // 匯出摘要至剪貼簿 (FR-16 / FR-18)
   const [copied, setCopied] = useState(false);
   const handleCopySummary = () => {
-    const summaryText = `【攜手基地 服務執行與成效摘要 (PoC 示範資料)】
+    const summaryText = `【攜手基地 PRD v2.0 服務執行與小組互動成效摘要 (示範資料)】
 統計時間：${new Date().toISOString().slice(0, 10)}
+注意：本資料為 PoC 示範資料，非實際服務成效。絕不對個人進行社交排名或友誼打分。
 ---------------------------------------------
-1. 招募與入組：
-   - 累積申請總數：${metrics.totalApplications} 人
-   - 已完成入組數：${metrics.totalEnrolled} 人
-   - 待確認/後續聯繫：${metrics.pendingApplications} 人
-2. 活動出席與留存：
+1. 服務執行層級：
+   - 累積申請總數：${metrics.totalApplications} 人（已入組：${metrics.totalEnrolled} 人）
    - 平均出席率：${metrics.attendanceRate.percentage}% (出席 ${metrics.attendanceRate.attendedCount} / 排定 ${metrics.attendanceRate.scheduledCount} 人次)
-   - 重複參與率：${metrics.repeatParticipationRate.percentage}% (至少參與2場：${metrics.repeatParticipationRate.repeatMembersCount} / 至少被安排1場：${metrics.repeatParticipationRate.eligibleMembersCount} 人)
-3. 同儕連結與主觀感受：
-   - 歸屬感/同儕連結均分：${metrics.peerConnectionAverage.average} / 5.0 (共 ${metrics.peerConnectionAverage.totalResponses} 份回饋)
-   - 8週結束後續聯繫意願：${metrics.postProgramWillingness.percentage}% (願意 ${metrics.postProgramWillingness.willingCount} / 已回覆 ${metrics.postProgramWillingness.totalAnswered} 人，尚有 ${metrics.postProgramWillingness.pendingCount} 人待回覆)
-4. 安全與問題處理：
-   - 總通報數：${metrics.issueSummary.total} 件
-   - 未處理/處理中：${metrics.issueSummary.unresolved} 件
-   - 已處理：${metrics.issueSummary.resolved} 件
----------------------------------------------
-註：本資料為 PoC 示範原型模擬數據，非實際醫療評估結果。`;
+   - 重複參與率：${metrics.repeatParticipationRate.percentage}% (至少參與2場：${metrics.repeatParticipationRate.repeatMembersCount} 人)
+2. 小組互惠與協作互動 (FR-17)：
+   - 共同決策完成數：${groupMetrics.totalTasksWithDecisions} 次 (提案總數：${groupMetrics.totalProposalsSubmitted} 件)
+   - 提案投票參與率：${groupMetrics.proposalVoteParticipationRate.percentage}%
+   - 多元參與途徑：操作 ${groupMetrics.contributionModeDistribution.direct_build} / 設計 ${groupMetrics.contributionModeDistribution.design_choice} / 整理 ${groupMetrics.contributionModeDistribution.resource_sort} / 討論 ${groupMetrics.contributionModeDistribution.text_voice_coord} 人
+   - 求助及時回應率：${groupMetrics.helpRequestResponseRate.percentage}%
+   - 下次計畫共識首選：${groupMetrics.nextPlanConsensus.leadingTarget}
+3. 主觀歸屬與安全：
+   - 歸屬與同儕連結均分：${metrics.peerConnectionAverage.average} / 5.0 (共 ${metrics.peerConnectionAverage.totalResponses} 份自評)
+   - 結束後聯繫意願：${metrics.postProgramWillingness.percentage}% (尚有 ${metrics.postProgramWillingness.pendingCount} 人待回覆，分開列示)
+   - 安全與問題通報：總計 ${metrics.issueSummary.total} 件 (已處理 ${metrics.issueSummary.resolved} 件)
+---------------------------------------------`;
 
     navigator.clipboard.writeText(summaryText);
     setCopied(true);
     setTimeout(() => setCopied(false), 3000);
   };
 
-  // 模擬活動提醒廣播 (FR-15)
+  // 模擬活動提醒廣播 (FR-16)
   const handleSimulateReminder = () => {
     dispatch({
       type: 'SET_TOAST',
-      message: '【模擬提醒已發送】（FR-15）：已向第 3 週青鳥組成員發送開場前 1 小時登入提醒與連線網址！',
+      message: '【站內模擬提醒】（FR-16）：已向第 3 週翠鳥組成員顯示開場前 1 小時基地連線提醒！未發送外部簡訊。',
     });
   };
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-8)' }}>
-      {/* 頂部儀表板標題與操作按鈕 */}
+      {/* 頂部標題列與操作 */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <h1 style={{ fontSize: 'var(--text-3xl)', fontWeight: 700 }}>
-              服務成效摘要儀表板 (FR-13)
+            <h1 style={{ fontSize: 'var(--text-3xl)', fontWeight: 800 }}>
+              服務成效與小組互動儀表板 (FR-17)
             </h1>
-            <SimBadge label="口徑嚴格對齊 PRD §9" />
+            <SimBadge label="示範資料，非實際服務成效" />
           </div>
           <p style={{ color: 'var(--ink-secondary)', fontSize: 'var(--text-base)', marginTop: 4 }}>
-            即時彙整申請審查、固定組別排程、活動出席、主觀歸屬感與事件處置進度。
+            依 PRD 第 8.3 節規範：以小組層級協作、決策與服務執行為主；嚴格排除任何個人社交排行榜或友誼分數。
           </p>
         </div>
 
@@ -83,11 +92,11 @@ export const AdminDashboard: React.FC = () => {
             type="button"
             onClick={handleSimulateReminder}
             className="btn-secondary"
-            title="模擬向全組成員發送活動提醒通知 (FR-15)"
+            title="模擬站內活動提醒通知 (FR-16)"
             style={{ fontSize: 'var(--text-sm)' }}
           >
             <Bell size={18} />
-            <span>模擬活動提醒 (FR-15)</span>
+            <span>模擬活動提醒 (FR-16)</span>
           </button>
 
           <button
@@ -97,19 +106,81 @@ export const AdminDashboard: React.FC = () => {
             style={{ fontSize: 'var(--text-sm)' }}
           >
             <Copy size={18} />
-            <span>{copied ? '已複製彙總至剪貼簿！' : '匯出/複製彙總 (FR-16)'}</span>
+            <span>{copied ? '已複製彙總至剪貼簿！' : '匯出/複製成效彙總 (FR-18)'}</span>
           </button>
         </div>
       </div>
 
-      {/* 關鍵數據指標卡 (4 大層級 §9) */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-          gap: 'var(--space-6)',
-        }}
-      >
+      {/* PRD v2.0 核心：小組協作與互動層級指標 (FR-17) */}
+      <section className="card" style={{ borderColor: 'var(--primary-border)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-4)', flexWrap: 'wrap', gap: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <ChartBar size={22} color="var(--primary)" />
+            <h2 style={{ fontSize: 'var(--text-xl)', fontWeight: 700 }}>
+              小組協作與互惠互動歷程 (FR-17)
+            </h2>
+          </div>
+          <span style={{ fontSize: 'var(--text-xs)', color: 'var(--ink-secondary)' }}>
+            統計小組：翠鳥一組 (樣本數 N=4)
+          </span>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(230px, 1fr))', gap: 'var(--space-4)' }}>
+          <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--bg-sand-darker)', borderRadius: 'var(--radius-lg)' }}>
+            <div style={{ fontSize: 'var(--text-xs)', color: 'var(--ink-secondary)' }}>小組共同決策完成數</div>
+            <div style={{ fontSize: 'var(--text-3xl)', fontWeight: 800, color: 'var(--primary)', margin: '4px 0' }}>
+              {groupMetrics.totalTasksWithDecisions} 次
+            </div>
+            <div style={{ fontSize: '11px', color: 'var(--ink-secondary)' }}>
+              方案提案總數：{groupMetrics.totalProposalsSubmitted} 件
+            </div>
+          </div>
+
+          <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--bg-sand-darker)', borderRadius: 'var(--radius-lg)' }}>
+            <div style={{ fontSize: 'var(--text-xs)', color: 'var(--ink-secondary)' }}>提案投票參與覆蓋率</div>
+            <div style={{ fontSize: 'var(--text-3xl)', fontWeight: 800, color: 'var(--primary)', margin: '4px 0' }}>
+              {groupMetrics.proposalVoteParticipationRate.percentage}%
+            </div>
+            <div style={{ fontSize: '11px', color: 'var(--ink-secondary)' }}>
+              {groupMetrics.proposalVoteParticipationRate.formula}
+            </div>
+          </div>
+
+          <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--bg-sand-darker)', borderRadius: 'var(--radius-lg)' }}>
+            <div style={{ fontSize: 'var(--text-xs)', color: 'var(--ink-secondary)' }}>求助與暫停及時回應率</div>
+            <div style={{ fontSize: 'var(--text-3xl)', fontWeight: 800, color: '#4CAF50', margin: '4px 0' }}>
+              {groupMetrics.helpRequestResponseRate.percentage}%
+            </div>
+            <div style={{ fontSize: '11px', color: 'var(--ink-secondary)' }}>
+              已由主持人支援 {groupMetrics.helpRequestResponseRate.handledCount} / 提出 {groupMetrics.helpRequestResponseRate.totalRequests} 件
+            </div>
+          </div>
+
+          <div style={{ padding: 'var(--space-4)', backgroundColor: 'var(--bg-sand-darker)', borderRadius: 'var(--radius-lg)' }}>
+            <div style={{ fontSize: 'var(--text-xs)', color: 'var(--ink-secondary)' }}>下次計畫共識達成</div>
+            <div style={{ fontSize: 'var(--text-base)', fontWeight: 700, color: 'var(--ink-primary)', margin: '6px 0', lineHeight: 1.3 }}>
+              {groupMetrics.nextPlanConsensus.leadingTarget}
+            </div>
+            <div style={{ fontSize: '11px', color: 'var(--ink-secondary)' }}>
+              投票率：{groupMetrics.nextPlanConsensus.participationRate}%
+            </div>
+          </div>
+        </div>
+
+        {/* 多元貢獻途徑分佈 */}
+        <div style={{ marginTop: 'var(--space-4)', padding: '12px 16px', backgroundColor: '#FFFFFF', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', fontSize: 'var(--text-xs)' }}>
+          <strong>多元貢獻方式分佈（不依障礙分類，所有途徑皆影響共同成果）：</strong>
+          <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginTop: 6, color: 'var(--ink-secondary)' }}>
+            <span>• 直接操作遊戲：<strong>{groupMetrics.contributionModeDistribution.direct_build}</strong> 人</span>
+            <span>• 提出/篩選設計：<strong>{groupMetrics.contributionModeDistribution.design_choice}</strong> 人</span>
+            <span>• 建材資源整理：<strong>{groupMetrics.contributionModeDistribution.resource_sort}</strong> 人</span>
+            <span>• 討論協調筆記：<strong>{groupMetrics.contributionModeDistribution.text_voice_coord}</strong> 人</span>
+          </div>
+        </div>
+      </section>
+
+      {/* 服務執行與出席指標卡 */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 'var(--space-6)' }}>
         {/* 指標 1：申請與入組 */}
         <div className="card">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
@@ -122,10 +193,7 @@ export const AdminDashboard: React.FC = () => {
             {metrics.totalEnrolled} <span style={{ fontSize: 'var(--text-base)', color: 'var(--ink-secondary)', fontWeight: 400 }}>/ {metrics.totalApplications} 人</span>
           </div>
           <div style={{ marginTop: 8, fontSize: 'var(--text-xs)', color: 'var(--ink-secondary)' }}>
-            完成固定小組入組率：{Math.round((metrics.totalEnrolled / metrics.totalApplications) * 100)}%
-          </div>
-          <div style={{ borderTop: '1px dashed var(--border)', marginTop: 10, paddingTop: 6, fontSize: '11px', color: 'var(--ink-muted)' }}>
-            <strong>口徑：</strong>選定期間收到的申請與完成分組安排者分開計算。
+            固定小組入組率：{Math.round((metrics.totalEnrolled / metrics.totalApplications) * 100)}%
           </div>
         </div>
 
@@ -143,9 +211,6 @@ export const AdminDashboard: React.FC = () => {
           <div style={{ marginTop: 8, fontSize: 'var(--text-xs)', color: 'var(--ink-secondary)' }}>
             實際出席 {metrics.attendanceRate.attendedCount} 人次 ｜ 已排定 {metrics.attendanceRate.scheduledCount} 人次
           </div>
-          <div style={{ borderTop: '1px dashed var(--border)', marginTop: 10, paddingTop: 6, fontSize: '11px', color: 'var(--ink-muted)' }}>
-            <strong>口徑：</strong>{metrics.attendanceRate.formula}；取消或未開放場次不計入。
-          </div>
         </div>
 
         {/* 指標 3：重複參與率 */}
@@ -160,10 +225,7 @@ export const AdminDashboard: React.FC = () => {
             {metrics.repeatParticipationRate.percentage}%
           </div>
           <div style={{ marginTop: 8, fontSize: 'var(--text-xs)', color: 'var(--ink-secondary)' }}>
-            至少參與 2 場：{metrics.repeatParticipationRate.repeatMembersCount} 人 ｜ 安排至少 1 場：{metrics.repeatParticipationRate.eligibleMembersCount} 人
-          </div>
-          <div style={{ borderTop: '1px dashed var(--border)', marginTop: 10, paddingTop: 6, fontSize: '11px', color: 'var(--ink-muted)' }}>
-            <strong>口徑：</strong>{metrics.repeatParticipationRate.formula}。
+            至少出席 2 場：{metrics.repeatParticipationRate.repeatMembersCount} 人 ｜ 安排至少 1 場：{metrics.repeatParticipationRate.eligibleMembersCount} 人
           </div>
         </div>
 
@@ -179,27 +241,24 @@ export const AdminDashboard: React.FC = () => {
             {metrics.peerConnectionAverage.average} <span style={{ fontSize: 'var(--text-base)', color: 'var(--ink-secondary)', fontWeight: 400 }}>/ 5.0</span>
           </div>
           <div style={{ marginTop: 8, fontSize: 'var(--text-xs)', color: 'var(--ink-secondary)' }}>
-            累計有效回饋：{metrics.peerConnectionAverage.totalResponses} 份自評
-          </div>
-          <div style={{ borderTop: '1px dashed var(--border)', marginTop: 10, paddingTop: 6, fontSize: '11px', color: 'var(--ink-muted)' }}>
-            <strong>口徑：</strong>每場活動自評問卷加總平均，未回覆不作負面推估。
+            累計自評份數：{metrics.peerConnectionAverage.totalResponses} 份（未回覆不作負面推估）
           </div>
         </div>
       </div>
 
-      {/* 待辦項目警示橫幅 */}
+      {/* 安全事件與自願線下探索紀錄 */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 'var(--space-6)' }}>
-        {/* 待處理事件 */}
+        {/* 待處理問題事件 */}
         <div className="card" style={{ borderLeft: '6px solid var(--accent)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
             <h2 style={{ fontSize: 'var(--text-lg)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }}>
               <WarningCircle size={22} color="var(--accent)" weight="fill" />
               <span>待處理問題事件 ({metrics.issueSummary.unresolved} 件)</span>
             </h2>
-            <span className="chip chip-warning">FR-12</span>
+            <span className="chip chip-warning">FR-14</span>
           </div>
           <p style={{ fontSize: 'var(--text-sm)', color: 'var(--ink-secondary)', marginBottom: 12 }}>
-            包含技術障礙與互動安全通報。需即時聯繫並登錄後續處置。
+            包含技術障礙與互動安全通報。保護成員隱私，不在公開小組揭露。
           </p>
           <div style={{ display: 'flex', gap: 12, fontSize: 'var(--text-sm)' }}>
             <span>技術問題：<strong>{metrics.issueSummary.technical}</strong></span>
@@ -208,64 +267,25 @@ export const AdminDashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* 結束後聯繫意願 */}
+        {/* 自願線下探索意願 (FR-15) */}
         <div className="card" style={{ borderLeft: '6px solid var(--primary)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
             <h2 style={{ fontSize: 'var(--text-lg)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }}>
-              <Sparkle size={22} color="var(--primary)" weight="fill" />
-              <span>8 週結束後聯繫意願 (FR-14)</span>
+              <Compass size={22} color="var(--primary)" weight="fill" />
+              <span>自願線下／活動外探索意願 (FR-15)</span>
             </h2>
-            <span className="chip chip-info">持續性追蹤</span>
+            <span className="chip chip-info">模擬意願蒐集</span>
           </div>
-          <div style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, color: 'var(--primary)', margin: '4px 0' }}>
-            {metrics.postProgramWillingness.percentage}% 願意繼續保持聯繫
+          <div style={{ display: 'flex', gap: 12, fontSize: 'var(--text-sm)', margin: '8px 0' }}>
+            <span>有興趣：<strong>{groupMetrics.offlineExploration.interestedCount}</strong> 人</span>
+            <span>想先繼續線上：<strong>{groupMetrics.offlineExploration.continueOnlineCount}</strong> 人</span>
+            <span>暫不考慮：<strong>{groupMetrics.offlineExploration.notConsideringCount}</strong> 人</span>
           </div>
           <p style={{ fontSize: 'var(--text-xs)', color: 'var(--ink-secondary)' }}>
-            已回覆成員中願意自願交流比率。尚有 <strong>{metrics.postProgramWillingness.pendingCount} 位</strong> 待回覆（嚴格將「待回覆」與「無意願」分開計算）。
+            {groupMetrics.offlineExploration.note}。
           </p>
         </div>
       </div>
-
-      {/* 待確認名單快速跳轉 */}
-      <section className="card">
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-4)' }}>
-          <h2 style={{ fontSize: 'var(--text-xl)', fontWeight: 700 }}>
-            近期待確認申請 (FR-04)
-          </h2>
-          <span style={{ fontSize: 'var(--text-sm)', color: 'var(--ink-secondary)' }}>
-            尚有 {metrics.pendingApplications} 筆待進行可及性測試
-          </span>
-        </div>
-
-        <div className="table-wrapper">
-          <table>
-            <thead>
-              <tr>
-                <th>送出時間</th>
-                <th>申請暱稱</th>
-                <th>年齡</th>
-                <th>操作設備偏好</th>
-                <th>溝通偏好</th>
-                <th>狀態</th>
-              </tr>
-            </thead>
-            <tbody>
-              {state.applications.slice(0, 5).map((app) => (
-                <tr key={app.id}>
-                  <td>{app.submittedAt}</td>
-                  <td style={{ fontWeight: 600 }}>{app.nickname}</td>
-                  <td>{app.age} 歲</td>
-                  <td>{app.inputMethod}</td>
-                  <td>{app.communicationPreference}</td>
-                  <td>
-                    <span className="chip chip-info">{app.status}</span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
     </div>
   );
 };

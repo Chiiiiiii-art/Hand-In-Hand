@@ -13,7 +13,8 @@ import {
   CheckCircle,
   Clock,
   Compass,
-  ArrowSquareOut
+  ArrowSquareOut,
+  House
 } from '@phosphor-icons/react';
 
 export const MyStatus: React.FC = () => {
@@ -61,7 +62,11 @@ export const MyStatus: React.FC = () => {
             </p>
           </div>
 
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+            <Link to="/" className="btn-primary" style={{ textDecoration: 'none', fontSize: 'var(--text-sm)', minHeight: 40, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+              <House size={18} />
+              <span>進入我的小組基地</span>
+            </Link>
             <Link to="/report-issue" className="btn-secondary" style={{ textDecoration: 'none', fontSize: 'var(--text-sm)', minHeight: 40 }}>
               <WarningCircle size={18} />
               <span>遇困擾安心求助</span>

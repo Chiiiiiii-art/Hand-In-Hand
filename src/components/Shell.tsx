@@ -2,8 +2,8 @@ import React, { ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAppStore } from '../store';
 import { RoleSwitch } from './RoleSwitch';
-import { DemoGuide } from './DemoGuide';
 import { SimBadge } from './SimBadge';
+import { ScenarioStepper } from './ScenarioStepper';
 import {
   House,
   ClipboardText,
@@ -14,35 +14,50 @@ import {
   ChartBar,
   UsersThree,
   BookOpenText,
-  CheckSquare
+  CheckSquare,
+  GameController,
+  SlidersHorizontal,
+  Compass
 } from '@phosphor-icons/react';
 
 export const Shell: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { state } = useAppStore();
   const location = useLocation();
 
-  const isParticipant = state.currentRole === 'participant';
-
   const participantNav = [
-    { label: '聚會首頁', path: '/', icon: <House size={20} /> },
-    { label: '預約小隊', path: '/register', icon: <ClipboardText size={20} /> },
-    { label: '我的小隊天地', path: '/my-status', icon: <UserCheck size={20} /> },
-    { label: '安心求助', path: '/report-issue', icon: <WarningCircle size={20} /> },
-    { label: '聚會悄悄話', path: '/feedback', icon: <ChatTeardropDots size={20} /> },
-    { label: '客廳約定與問答', path: '/rules', icon: <BookOpenText size={20} /> },
+    { label: '我的小組基地', path: '/', icon: <House size={18} /> },
+    { label: '偏好設定與狀態', path: '/my-status', icon: <UserCheck size={18} /> },
+    { label: '問題求助', path: '/report-issue', icon: <WarningCircle size={18} /> },
+    { label: '活動回饋', path: '/feedback', icon: <ChatTeardropDots size={18} /> },
+    { label: '參與守則', path: '/rules', icon: <BookOpenText size={18} /> },
+    { label: '服務報名', path: '/register', icon: <ClipboardText size={18} /> },
+  ];
+
+  const hostNav = [
+    { label: '活動即時控制台', path: '/host/console', icon: <SlidersHorizontal size={18} /> },
+    { label: '任務範本編排器', path: '/host/tasks', icon: <GameController size={18} /> },
+    { label: '小組基地前台', path: '/', icon: <House size={18} /> },
+    { label: '需求驗收清單', path: '/acceptance', icon: <CheckSquare size={18} /> },
   ];
 
   const adminNav = [
-    { label: '服務儀表板', path: '/admin/dashboard', icon: <ChartBar size={20} /> },
-    { label: '申請審查與確認', path: '/admin/applications', icon: <ClipboardText size={20} /> },
-    { label: '固定小組管理', path: '/admin/groups', icon: <UsersThree size={20} /> },
-    { label: '場次排程與出席', path: '/admin/sessions', icon: <CalendarCheck size={20} /> },
-    { label: '事件處理紀錄', path: '/admin/issues', icon: <WarningCircle size={20} /> },
-    { label: '後續追蹤管理', path: '/admin/follow-up', icon: <UserCheck size={20} /> },
-    { label: '需求驗收清單', path: '/acceptance', icon: <CheckSquare size={20} /> },
+    { label: '服務儀表板', path: '/admin/dashboard', icon: <ChartBar size={18} /> },
+    { label: '固定小組管理', path: '/admin/groups', icon: <UsersThree size={18} /> },
+    { label: '場次排程', path: '/admin/sessions', icon: <CalendarCheck size={18} /> },
+    { label: '申請審查', path: '/admin/applications', icon: <ClipboardText size={18} /> },
+    { label: '安全事件處理', path: '/admin/issues', icon: <WarningCircle size={18} /> },
+    { label: '需求驗收清單', path: '/acceptance', icon: <CheckSquare size={18} /> },
   ];
 
-  const currentNav = isParticipant ? participantNav : adminNav;
+  let currentNav = participantNav;
+  let roleAriaLabel = '參與者功能導覽';
+  if (state.currentRole === 'host') {
+    currentNav = hostNav;
+    roleAriaLabel = '主持人功能導覽';
+  } else if (state.currentRole === 'admin') {
+    currentNav = adminNav;
+    roleAriaLabel = '服務管理者功能導覽';
+  }
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -67,14 +82,15 @@ export const Shell: React.FC<{ children: ReactNode }> = ({ children }) => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            height: 'var(--header-height)',
+            minHeight: 'var(--header-height)',
             flexWrap: 'wrap',
             gap: 'var(--space-2)',
+            padding: '8px var(--space-4)',
           }}
         >
           {/* Logo 與產品名稱 */}
           <Link
-            to={isParticipant ? '/' : '/admin/dashboard'}
+            to={state.currentRole === 'admin' ? '/admin/dashboard' : state.currentRole === 'host' ? '/host/console' : '/'}
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -89,22 +105,25 @@ export const Shell: React.FC<{ children: ReactNode }> = ({ children }) => {
                 攜手基地
               </div>
               <div style={{ fontSize: 'var(--text-xs)', color: 'var(--ink-secondary)' }}>
-                無障礙線上遊戲聚會所 (PoC)
+                友誼支持系統 (PRD v2.0 PoC)
               </div>
             </div>
           </Link>
 
           {/* 角色切換器與展示標籤 */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)', flexWrap: 'wrap' }}>
-            <SimBadge label="展示原型模式" />
+            <SimBadge label="v2.0 友誼支持原型" />
             <RoleSwitch />
           </div>
         </div>
 
+        {/* PRD 第 9 節情境導覽浮條 */}
+        <ScenarioStepper />
+
         {/* 次導航列（分頁項目） */}
         <nav
           role="navigation"
-          aria-label={isParticipant ? '參與者功能導覽' : '管理者功能導覽'}
+          aria-label={roleAriaLabel}
           style={{
             backgroundColor: 'var(--bg-sand-darker)',
             borderTop: '1px solid var(--border)',
@@ -183,9 +202,6 @@ export const Shell: React.FC<{ children: ReactNode }> = ({ children }) => {
         </div>
       </main>
 
-      {/* PRD 7 步導覽抽屜 */}
-      <DemoGuide />
-
       {/* 頁尾誠實呈現對照與無障礙聲明 */}
       <footer
         role="contentinfo"
@@ -199,14 +215,14 @@ export const Shell: React.FC<{ children: ReactNode }> = ({ children }) => {
         <div className="container" style={{ fontSize: 'var(--text-xs)', color: 'var(--ink-secondary)', display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
             <div>
-              <strong>攜手基地 — 無障礙線上遊戲聚會所 (UI PoC)</strong>
+              <strong>攜手基地 — 線上遊戲友誼支持系統 (PRD v2.0 UI PoC)</strong>
               <p style={{ marginTop: 4 }}>
-                專為行動不便、長時間在家的成人打造，在螢幕前輕鬆連線的每週固定隊友。
+                以既有多人線上沙盒遊戲為媒介，支持成年行動障礙者從反覆相遇逐步發展同儕友誼。
               </p>
             </div>
             <div>
-              <Link to="/acceptance" style={{ marginRight: 16 }}>
-                PRD 需求對照驗收清單 (FR-01 ~ FR-16)
+              <Link to="/acceptance" style={{ marginRight: 16, fontWeight: 600 }}>
+                PRD v2.0 需求與驗收對照清單 (FR-01 ~ FR-18)
               </Link>
               <Link to="/rules">
                 客廳約定與安心承諾
@@ -214,9 +230,9 @@ export const Shell: React.FC<{ children: ReactNode }> = ({ children }) => {
             </div>
           </div>
           <div style={{ borderTop: '1px dashed var(--border)', paddingTop: 12, display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-            <SimBadge label="誠實呈現聲明 (PRD NFR)" />
+            <SimBadge label="PRD 誠實呈現聲明" />
             <span>
-              本原型僅用於服務流程驗證與提案展示。所有第三方遊戲連線、通知發送及統計數值均為本機模擬狀態，未串接真實醫療診斷或遊戲伺服器。
+              本原型為服務互動 PoC。所有第三方遊戲連線、伺服器同步、通知發送及統計數值均為本機示範資料，未串接真實醫療診斷或遊戲伺服器。絕不對個人進行友誼分數排名。
             </span>
           </div>
         </div>
