@@ -1,291 +1,210 @@
-# 攜手基地 (Hand-in-Hand) — 系統架構圖與使用者流程圖
+# 攜手基地 PRD v2.0 系統架構圖與使用者流程圖
 
-本文件提供「攜手基地 (Hand-in-Hand)」系統之完整技術架構、組件層級、狀態機模型與三條核心業務流程圖，採用標準 Mermaid 語法繪製，便於技術審查、交付驗收與後續擴充。
+本文件提供「攜手基地 — 以線上遊戲為媒介的友誼支持系統 (PRD v2.0)」之完整系統架構、使用者流程圖與狀態機流轉圖。
 
 ---
 
-## 1. 系統架構圖 (System Architecture)
+## 1. 系統整體架構圖 (System Architecture)
 
-### 1.1 全端分層架構 (Layered Architecture)
-
-系統採用輕量化、高效能的前端單頁應用（SPA）架構，嚴格遵循責任分離原則（Separation of Concerns）：
+系統定位為「友誼發展支持層」，不取代外部沙盒遊戲（如 Minecraft Creative），專注於維持關係連續性、互惠任務決策、低壓力社交與安全管理。
 
 ```mermaid
 graph TD
-    subgraph UI_Presentation ["展示層 (Presentation Layer)"]
-        Shell["應用外框 (Shell & Header)"]
-        Nav["導航與視角切換器 (RoleSwitch)"]
-        Sim["示範導覽引導 (DemoGuide / SimBadge)"]
-        P_Views["參與者頁面 (Home / Rules / Register / MyStatus / ReportIssue / Feedback)"]
-        A_Views["管理者頁面 (Dashboard / Applications / Groups / Sessions / Issues / FollowUp)"]
+  subgraph Client_Presentation [前端展示層 (React 19 SPA + Vite + Vanilla CSS Tokens)]
+    subgraph Role_Participant [參與者視角 (小禾)]
+      P_Base[小組基地首頁 FR-01 /]
+      P_World[共同世界成果卡 FR-02]
+      P_Task[合作任務板 FR-03]
+      P_Prop[提案與投票 FR-04]
+      P_Mode[貢獻方式切換 FR-05]
+      P_Help[求助與暫停 FR-06]
+      P_Memory[共同記憶與成果 FR-08]
+      P_Retro[低壓力回顧 FR-07]
+      P_Next[下次計畫投票 FR-09]
+      P_Off[自願線下探索 FR-15]
     end
 
-    subgraph Routing_Layer ["路由層 (Routing Layer)"]
-        Router["React Router v7 (HashRouter)"]
-        Routes_P["參與者端路由 (#/, #/rules, #/register, #/my-status, etc.)"]
-        Routes_A["管理者端路由 (#/admin/dashboard, #/admin/applications, etc.)"]
+    subgraph Role_Host [引導主持人視角 (陳主持)]
+      H_Console[活動即時控制台 FR-12 /host/console]
+      H_Orch[任務範本編排器 FR-11 /host/tasks]
+      H_HelpDesk[求助即時處置工作台]
+      H_Metrics[小組互動摘要觀察 FR-17]
     end
 
-    subgraph State_Management ["狀態與資料流層 (State Management Layer)"]
-        StoreProvider["React Context 全域狀態庫 (StoreContext)"]
-        State_Hooks["Custom Hook (useAppStore)"]
-        subgraph Domains ["領域實體 (Entities)"]
-            AppList["申請名單 (applications)"]
-            GrpList["固定小組 (groups)"]
-            SesList["排程場次 (sessions)"]
-            IssList["問題案件 (issues)"]
-            FbList["單場回饋 (feedbacks)"]
-            FuList["結案追蹤 (followUps)"]
-        end
+    subgraph Role_Admin [服務管理支援層]
+      A_Dash[成效儀表板 FR-17 /admin/dashboard]
+      A_Group[固定小組管理 FR-13 /admin/groups]
+      A_Session[場次排程 FR-13 /admin/sessions]
+      A_Issue[私密安全事件處置 FR-14 /admin/issues]
+      A_Acc[需求驗收矩陣 /acceptance]
     end
 
-    subgraph Business_Logic ["業務與指標運算層 (Domain Logic Layer)"]
-        MetricsCalc["指標計算模組 (metrics.ts)"]
-        Formula_Att["出席率演算法 (排除取消與未記錄)"]
-        Formula_Rep["重複參與率 (>= 2 次出席)"]
-        Formula_Con["同儕連結感加權平均 (1-5 星)"]
-        Formula_Fu["結案聯繫意願 (未回覆獨立計算)"]
-        A11yGuard["4 項可及性防呆檢核門檻 (BR-04)"]
-    end
+    ScenarioBar[PRD 第 9 節 9 步情境導覽浮條 (ScenarioStepper)]
+  end
 
-    subgraph Storage_Layer ["持久化儲存層 (Persistence Layer)"]
-        StorageEngine["本地儲存引擎 (LocalStorage Engine)"]
-        SeedData["脫敏虛構種子資料庫 (seed.ts)"]
-        ResetHandler["一鍵還原預設資料 (Reset State)"]
-    end
+  subgraph State_Domain [狀態與領域邏輯層 (React Context + Reducer)]
+    Store[AppStore 狀態中樞]
+    Reducer[appReducer 狀態轉移機]
+    MetricsCalc[metrics.ts 指標運算引擎 (無個人排名)]
+  end
 
-    Shell --> Nav
-    Shell --> Sim
-    Shell --> Router
-    Router --> Routes_P --> P_Views
-    Router --> Routes_A --> A_Views
-    P_Views & A_Views --> State_Hooks
-    State_Hooks --> StoreProvider
-    StoreProvider --> Domains
-    Domains --> MetricsCalc
-    MetricsCalc --> Formula_Att & Formula_Rep & Formula_Con & Formula_Fu & A11yGuard
-    StoreProvider <--> StorageEngine
-    StorageEngine -.->|初次載入或重置| SeedData
+  subgraph Persistence_Data [資料與模擬層]
+    LocalStorage[(瀏覽器 LocalStorage: hand_in_hand_state_v2)]
+    SeedData[PRD v2.0 虛構示範資料庫 seed.ts]
+    SimBadgeRule[PRD 誠實標籤約束層 (示範資料 / 待確認 / 模擬狀態)]
+  end
+
+  Client_Presentation <--> State_Domain
+  State_Domain <--> Persistence_Data
 ```
 
 ---
 
-### 1.2 前端組件層級樹 (Component Hierarchy)
+## 2. 參與者核心旅程使用者流程圖 (Participant Core Journey)
 
-```mermaid
-graph TD
-    App["App.tsx (Root Component)"]
-    Store["StoreProvider (全域狀態注入)"]
-    ShellComp["Shell.tsx (無障礙外框)"]
-    Header["頂部導航列 (Header)"]
-    RoleSwitch["角色切換器 (RoleSwitch)"]
-    SimBadge["模擬標記 (SimBadge)"]
-    DemoGuide["展示指引面板 (DemoGuide)"]
-    MainContainer["主視圖容器 (Main Content Area)"]
-    Footer["通用頁尾 (Footer)"]
-
-    App --> Store
-    Store --> ShellComp
-    ShellComp --> Header
-    Header --> RoleSwitch
-    Header --> SimBadge
-    Header --> DemoGuide
-    ShellComp --> MainContainer
-    ShellComp --> Footer
-
-    MainContainer --> ViewRoute{"路由分發"}
-    ViewRoute -->|前台| P_Pages["參與者端視圖 (Participant Views)"]
-    ViewRoute -->|後台| A_Pages["後台管理端視圖 (Admin Views)"]
-    ViewRoute -->|驗收| AccPage["驗收對照視圖 (Acceptance View)"]
-
-    P_Pages --> RegComp["Register.tsx (表單驗證 / 範例帶入)"]
-    P_Pages --> StatusComp["MyStatus.tsx (狀態標籤 / 加入指引卡片)"]
-    P_Pages --> FeedbackComp["Feedback.tsx (評分星級 / 意願勾選)"]
-    P_Pages --> IssueComp["ReportIssue.tsx (隱私求助表單)"]
-
-    A_Pages --> DashComp["Dashboard.tsx (指標卡片 / 複製彙總)"]
-    A_Pages --> AppMgmtComp["Applications.tsx (審核 Modal / 4 項檢核)"]
-    A_Pages --> GrpMgmtComp["Groups.tsx (固定成員名冊)"]
-    A_Pages --> SesMgmtComp["Sessions.tsx (場次發布 / 出席登記)"]
-    A_Pages --> IssMgmtComp["Issues.tsx (安全事件處置備忘)"]
-```
-
----
-
-### 1.3 核心實體狀態機 (State Machine Model)
-
-系統包含四個嚴格遵循 PRD 規格的狀態轉換生命週期：
-
-```mermaid
-stateDiagram-v2
-    [*] --> 申請待確認: 參與者提交報名表單 (FR-02)
-    
-    state 申請狀態機 {
-        申請待確認 --> 需後續聯繫: 設備或時段尚待釐清
-        需後續聯繫 --> 申請待確認: 參與者補充資料完成
-        申請待確認 --> 可安排: 通過 4 項可及性檢核 (BR-04)
-        需後續聯繫 --> 可安排: 協調完成並通過檢核
-        可安排 --> 已入組: 管理者指派至固定小組 (FR-06)
-    }
-
-    state 場次狀態機 {
-        [*] --> 場次待發布: 建立 8 週活動規劃 (FR-07)
-        場次待發布 --> 場次已發布: 確定主持人、目標與加入指引
-        場次已發布 --> 進行出席登記: 活動開場 (FR-09)
-    }
-
-    state 問題回報狀態機 {
-        [*] --> 新案件: 參與者提交問題 (FR-11)
-        新案件 --> 處理中: 管理者受理解析
-        處理中 --> 已處理: 處置對策確認並記錄後續追蹤 (FR-12)
-    }
-
-    state 結案追蹤狀態機 {
-        [*] --> 追蹤待回覆: 第 8 週活動結算完畢 (FR-14)
-        追蹤待回覆 --> 追蹤已完成: 參與者提交持續聯繫意願問卷
-    }
-```
-
----
-
-## 2. 使用者流程圖 (User Flows)
-
-### 2.1 參與者端到端主流程 (Participant End-to-End Journey)
-
-涵蓋從了解服務、報名檢核、狀態查詢、加入活動、問題求助到完成回饋之完整旅程：
-
-```mermaid
-flowchart TD
-    Start([參與者抵達首頁]) --> ViewService[瀏覽服務定位與固定小組介紹]
-    ViewService --> ReadRules[閱讀安全守則與常見問答 /rules]
-    ReadRules --> CheckEligible{是否符合條件？<br/>年滿18歲 & 移動受限成人}
-    
-    CheckEligible -- 否 --> ExitNotEligible([感謝關注，不符合本案試辦條件])
-    CheckEligible -- 是 --> GoRegister[進入報名頁面 /register]
-    
-    GoRegister --> FillForm[填寫表單：聯絡資訊、可用時段、<br/>操作方式、溝通偏好]
-    FillForm --> FormCheck{表單驗證<br/>BR-01 年齡檢核<br/>BR-02 同意守則}
-    
-    FormCheck -- 未通過 --> ShowFormErrors[顯示無障礙錯誤提示摘要]
-    ShowFormErrors --> FillForm
-    FormCheck -- 通過 --> SubmitApp[送出申請 (立案: 待確認)]
-    
-    SubmitApp --> ViewMyStatus[進入「我的狀態頁」/my-status]
-    ViewMyStatus --> StatusPolling{當前申請狀態}
-    
-    StatusPolling -- 待確認 / 需後續聯繫 --> WaitStaff[顯示狀態文字解讀，等待團隊審查協調]
-    StatusPolling -- 可安排 --> WaitGroup[已通過可及性確認，等待小組分派]
-    StatusPolling -- 已入組 --> EnrolledView[看見所屬小組名稱與組員暱稱]
-    
-    EnrolledView --> CheckSessionInfo[查閱每週場次排程與共同任務目標]
-    CheckSessionInfo --> SessionStatusCheck{場次是否已發布？}
-    
-    SessionStatusCheck -- 待發布 --> WaitPublish[顯示「待發布」狀態，暫不公開連線網址]
-    SessionStatusCheck -- 已發布 --> ViewJoinGuide[查閱 Minecraft 伺服器 IP、<br/>語音文字頻道與備援聯絡人]
-    
-    ViewJoinGuide --> JoinActivity[進入遊戲與固定同儕協作互動]
-    
-    JoinActivity --> TroubleHappened{活動中是否遭遇<br/>技術或互動安全問題？}
-    TroubleHappened -- 是 --> GoReport[前往問題求助頁 /report-issue<br/>一對一私密通報]
-    TroubleHappened -- 否 --> CompleteSession[完成當次共同任務]
-    
-    GoReport --> SubmitIssue[提交事件，管理者端即時受理排解]
-    SubmitIssue --> CompleteSession
-    
-    CompleteSession --> SubmitFeedback[前往回饋頁 /feedback<br/>評定同儕連結感與活動評分]
-    
-    SubmitFeedback --> WeekCycle{是否已完成 8 週週期？}
-    WeekCycle -- 否 --> EnrolledView
-    WeekCycle -- 是 --> FillFollowUp[填寫結案後續追蹤問卷<br/>自評同儕繼續聯繫意願]
-    FillFollowUp --> EndJourney([圓滿完成同儕服務旅程])
-```
-
----
-
-### 2.2 管理者作業與活動維運流程 (Admin Operations Flow)
-
-管理者在整個服務週期中的日常作業流程，包含審查、排程、維運與結案統計：
-
-```mermaid
-flowchart TD
-    AdminLogin([管理者進入後台]) --> ViewDashboard[查閱服務儀表板 /admin/dashboard]
-    ViewDashboard --> ReviewApps[進入申請審查清單 /admin/applications]
-    
-    ReviewApps --> PickApp[選擇待審查申請案件]
-    PickApp --> OpenModal[開啟審查對話框，檢視輔具與時段偏好]
-    
-    OpenModal --> A11yChecklist{"4 項可及性事前檢核 (BR-04)<br/>1. 設備狀態<br/>2. 操作方式<br/>3. 溝通偏好<br/>4. 支援需求"}
-    
-    A11yChecklist -- 有項目不清楚或需調適 --> SetNeedContact[標記為「需後續聯繫」<br/>記錄內部備註]
-    SetNeedContact --> FollowUpContact[線下主動聯繫協調輔具操作]
-    FollowUpContact --> PickApp
-    
-    A11yChecklist -- 4 項皆已確認通過 --> SetReady[狀態更新為「可安排」]
-    
-    SetReady --> ManageGroups[進入小組管理 /admin/groups]
-    ManageGroups --> AssignGroup[將「可安排」成員編入 6-8 人固定小組]
-    AssignGroup --> AutoStatusUpdate[系統自動將成員狀態同步為「已入組」]
-    
-    AutoStatusUpdate --> ManageSessions[進入場次排程 /admin/sessions]
-    ManageSessions --> PlanSchedule[確認每週任務主題、時間、主持人]
-    PlanSchedule --> PublishSession[將場次切換為「已發布」<br/>指引正式向前台已入組成員公開]
-    
-    PublishSession --> HostActivity[主持線上共同活動]
-    HostActivity --> RecordAttendance[登記每位組員出席狀態：<br/>出席 / 缺席 / 事先請假]
-    
-    RecordAttendance --> CheckIssues{是否有收到參與者通報？}
-    CheckIssues -- 有新案件 --> ViewIssues[進入問題紀錄 /admin/issues<br/>執行安全隔離或技術處置]
-    CheckIssues -- 無案件 --> UpdateMetrics[儀表板即時重算成效指標]
-    
-    ViewIssues --> RecordResolution[記錄處置對策與追蹤備忘]
-    RecordResolution --> UpdateMetrics
-    
-    UpdateMetrics --> CycleEnd{8 週活動週期是否結束？}
-    CycleEnd -- 否 --> PlanSchedule
-    CycleEnd -- 是 --> ReviewFollowUp[進入後續追蹤專區 /admin/follow-up]
-    
-    ReviewFollowUp --> ExportSummary[點擊「複製彙總」產生成效報告]
-    ExportSummary --> EndAdminWork([完成本期服務交付結案])
-```
-
----
-
-### 2.3 活動中異常與安全處置流程 (Issue Reporting & Safety Escalation Flow)
-
-嚴格隔離個資、保障受害者安全與維持小組平穩運作之處置機制：
+嚴格對應 PRD 第 5.1 節與第 9 節端到端情境：
 
 ```mermaid
 sequenceDiagram
-    autonumber
-    actor P as 參與者 (Participant)
-    participant UI as 前台求助介面 (/report-issue)
-    participant Store as 全域資料庫 (StoreContext)
-    actor Admin as 服務管理者 / 主持人 (Admin)
-    participant AUI as 後台事件管理 (/admin/issues)
+  autonumber
+  actor User as 參與者 (小禾)
+  participant Base as 小組基地首頁 (FR-01)
+  participant World as 持續共同世界 (FR-02)
+  participant Task as 合作任務板 (FR-03/04/05)
+  participant Host as 主持人控制台 (FR-06/12)
+  participant Retro as 回顧與記憶 (FR-07/08)
+  participant Next as 下次活動與線下 (FR-09/15)
 
-    Note over P, Admin: 活動進行中發生技術卡頓、操作困難或遭遇不當言語騷擾
-    P->>UI: 點擊問題回報，選擇類別 (技術/互動安全/其他)
-    P->>UI: 填寫事件詳細描述 (非公開一對一加密表單)
-    P->>UI: 提交問題 (BR-07, BR-09)
-    UI->>Store: 建立案件 (狀態: 新案件, 時間戳記)
-    Store-->>UI: 顯示「已收到回報，專責團隊將盡速排解」確認提示
-    Store->>AUI: 事件清單即時出現紅色警示案件
-
-    Admin->>AUI: 點擊開啟案件詳情 (非公開畫面)
-    alt 技術問題 (如無法登入伺服器、快捷鍵衝突)
-        Admin->>Admin: 啟動技術應變機制 / 切換備援通訊管道
-        Admin->>AUI: 狀態更新為「處理中」，填寫線上排解步驟
-    else 互動與安全事件 (如言語冒犯、騷擾、私自索要個資)
-        Admin->>Admin: 活動主持人即刻介入保護受影響成員 (暫停發言/移出伺服器)
-        Admin->>AUI: 狀態更新為「處理中」，記錄違規事項與安全處置方針
-    end
-
-    Admin->>Admin: 安排活動後一對一私下關懷與後續聯繫
-    Admin->>AUI: 填寫「處置對策」與「後續聯繫追蹤安排」
-    Admin->>AUI: 標記案件為「已處理」
-    AUI->>Store: 更新事件狀態與處置紀錄
-    Store-->>Admin: 儀表板事件統計數字同步更新 (已處理案件數 +1)
+  User->>Base: 1. 登入進入小組基地
+  Base-->>User: 顯示固定小組 (青鳥一組) 與上次成果 (水上花園步道)
+  User->>World: 2. 檢視島嶼歷史作品與未完成待延續清單
+  User->>Task: 3. 打開當期合作任務「基地無障礙迎賓入口」
+  Task-->>User: 檢視小禾、阿木、海風提案與 4 種多元貢獻方式
+  User->>Task: 4. 投票支持提案 (小禾柔光拱橋) -> 更新小組首選
+  User->>Task: 5. 自主切換參與方式 (直接操作 -> 提出/篩選設計)
+  opt 遇到卡關或疲累
+    User->>Task: 6. 點擊「遇到卡關／請求協助」送出求助訊號
+    Task->>Host: 訊號即時傳送至主持人控制台
+    Host->>Task: 主持人一鍵回應「已完成支援，請放鬆雙手」
+    Task-->>User: 畫面即刻顯示「已由主持人支援」確認通知
+  end
+  User->>Retro: 7. 檢視活動結算生成之「共同摘要」
+  User->>Retro: 8. 回答或跳過低壓力對話提示 (無強迫揭露個資)
+  User->>Next: 9. 投票選定下次共同目標 (延伸水上高架景觀鐵路)
+  User->>Next: 10. 表達自願線下探索意願 (科技展小聚，地點交通待確認)
 ```
 
 ---
-*文件編制：Hand-in-Hand 產品研發團隊*
+
+## 3. 主持人引導與即時協調流程圖 (Host Facilitator Flow)
+
+對應 PRD 第 5.2 節與 FR-11、FR-12：
+
+```mermaid
+flowchart TD
+  Start([活動前準備]) --> Orch[進入任務編排器 /host/tasks FR-11]
+  Orch --> ChooseTpl[選取 8 週進程範本]
+  ChooseTpl --> SetGoal[設定團隊目標、4 種多元貢獻選項與可選題目]
+  SetGoal --> CheckRule{發布前規則檢核<br/>團隊互惠目標? 多元途徑?}
+  CheckRule -- 通過 --> Publish[發布任務至小組基地]
+
+  Publish --> LiveSession([活動進行中])
+  LiveSession --> LiveConsole[開啟活動即時控制台 /host/console FR-12]
+  LiveConsole --> Monitor[即時監控成員貢獻途徑與在線狀態]
+
+  Monitor --> CheckHelp{收到成員求助/暫停訊號? FR-06}
+  CheckHelp -- 是 --> HandleHelp[檢視求助類型: 換方式 / 卡關 / 休息]
+  HandleHelp --> ReplyHelp[填寫支援留言並一鍵點擊「立即回應並支援」]
+  ReplyHelp --> AckUser[參與者端即時獲取支援狀態]
+
+  CheckHelp -- 否 --> CheckSafe{發生互動衝突或技術異常?}
+  CheckSafe -- 是 --> HandleSafety[介入協調 / 轉入私密安全事件處置 FR-14]
+  CheckSafe -- 否 --> CompleteTask[推進任務至回顧階段]
+
+  AckUser --> CompleteTask
+  CompleteTask --> PostSession([活動結束後])
+  PostSession --> ViewMetrics[檢視小組層級互動摘要 FR-17]
+  ViewMetrics --> Note[確認無個人友誼分數 / 僅保留小組合作指標]
+  Note --> End([完成本週活動引導閉環])
+```
+
+---
+
+## 4. 關鍵領域狀態機流轉圖 (State Machines)
+
+### 4.1 提案與共同決策狀態機 (FR-04)
+```mermaid
+stateDiagram-v2
+  [*] --> 討論提案中: 任務發布
+  討論提案中 --> 成員發表提案: 成員點擊「+ 提出我的設計想法」
+  成員發表提案 --> 討論提案中: 提案送出並附帶可及性特色
+  討論提案中 --> 票數統計中: 成員點選「投票支持」
+  票數統計中 --> 產生小組首選: 計算最高支持票數提案
+  產生小組首選 --> 進行協作中: 鎖定藍圖進入實體建造
+  進行協作中 --> 完成待回顧: 共同成果達成並生成摘要
+  完成待回顧 --> 已歸檔: 活動結束收錄至共同世界歷程卡
+  已歸檔 --> [*]
+```
+
+### 4.2 求助與暫停處置狀態機 (FR-06, FR-12)
+```mermaid
+stateDiagram-v2
+  [*] --> 無求助狀態
+  無求助狀態 --> 待回應: 成員點選「遇到卡關／請求協助」送出表單
+  待回應 --> 已由主持人支援: 主持人控制台點擊「立即回應並標記已支援」
+  已由主持人支援 --> 無求助狀態: 成員確認收到協助並繼續參與活動
+```
+
+### 4.3 線下與活動外探索意願狀態機 (FR-15)
+```mermaid
+stateDiagram-v2
+  [*] --> 模擬提案建立: 標註「地點、交通與場地可及性待確認」
+  模擬提案建立 --> 尚未表態: 呈現在小組基地首頁
+  尚未表態 --> 有興趣: 成員點擊「有興趣」
+  尚未表態 --> 想先繼續線上: 成員點擊「想先繼續線上活動」
+  尚未表態 --> 暫不考慮: 成員點擊「暫不考慮」
+  暫不考慮 --> 權益無損: 系統明確提示「不扣分、不影響線上活動參與權」
+  想先繼續線上 --> 權益無損
+  有興趣 --> 意願匯總: 納入小組自願意願統計
+```
+
+---
+
+## 5. 資料流與模組相依架構 (Data Flow Architecture)
+
+```mermaid
+graph LR
+  subgraph Data_Source [持久化儲存]
+    LS[(LocalStorage)]
+    Seed[(初始示範種子)]
+  end
+
+  subgraph Store_Context [狀態容器 store.tsx]
+    State[AppState]
+    Dispatch[dispatch Action]
+  end
+
+  subgraph Domain_Calculators [領域計算與規則]
+    Metrics[metrics.ts]
+    RuleValidation[PRD 業務規則檢查 BR-01~BR-10]
+  end
+
+  subgraph Views_Pages [視圖分層]
+    BaseHome[BaseHome.tsx 小組基地]
+    HostConsole[HostConsole.tsx 主持人台]
+    TaskOrch[TaskOrchestrator.tsx 編排器]
+    AdminDash[Dashboard.tsx 管理儀表板]
+    AcceptanceView[Acceptance.tsx 驗收清單]
+  end
+
+  Data_Source --> State
+  State --> Metrics
+  Metrics --> BaseHome
+  Metrics --> HostConsole
+  Metrics --> AdminDash
+  RuleValidation --> BaseHome
+  RuleValidation --> TaskOrch
+  Views_Pages --> Dispatch
+  Dispatch --> State
+  State --> LS
+```

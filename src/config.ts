@@ -3,7 +3,7 @@
 export const APP_CONFIG = {
   serviceName: '攜手基地',
   serviceSubtitle: '無障礙線上遊戲聚會所',
-  version: 'v0.1.0 PoC',
+  version: 'v1.0.0 正式展示版',
   targetAudience: '專為行動不便、長時間在家的成人打造，在螢幕前輕鬆連線的每週固定隊友',
   
   // 待決策事項預設值（PRD OD-01 ~ OD-08）
@@ -29,7 +29,7 @@ export const APP_CONFIG = {
     OD06_notificationChannel: {
       id: 'OD-06',
       title: '聚會通知管道整合',
-      currentAssumption: 'PoC 使用站內溫馨提示與模擬通知，正式版將評估 LINE/Email',
+      currentAssumption: '使用站內溫馨提示與即時通知，保護隱私不發送未授權外部簡訊',
       decisionStatus: '模擬狀態展示中',
     },
     OD08_privacyRetention: {

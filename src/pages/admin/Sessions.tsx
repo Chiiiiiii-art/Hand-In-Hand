@@ -75,7 +75,7 @@ export const AdminSessions: React.FC = () => {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-8)' }}>
       <div>
         <h1 style={{ fontSize: 'var(--text-3xl)', fontWeight: 700 }}>
-          場次排程、發布與出席管理 (FR-07, FR-09)
+          場次排程、發布與出席管理
         </h1>
         <p style={{ color: 'var(--ink-secondary)', fontSize: 'var(--text-base)', marginTop: 4 }}>
           建立各週活動目標、發布加入指引，並於活動結束後登錄成員出席狀況與協作摘要。
@@ -163,10 +163,10 @@ export const AdminSessions: React.FC = () => {
             <div>
               <h3 style={{ fontSize: 'var(--text-lg)', fontWeight: 700, marginBottom: 8, display: 'flex', alignItems: 'center', gap: 6 }}>
                 <CalendarCheck size={20} color="var(--primary)" />
-                <span>小組成員出席登記 (FR-09)</span>
+                <span>小組成員出席登記</span>
               </h3>
               <p style={{ fontSize: 'var(--text-xs)', color: 'var(--ink-secondary)', marginBottom: 12 }}>
-                PRD 守則：請假或臨時缺席均需標記；缺席不自動視為不願參與。
+                友善守則：請假或臨時缺席均予標記關懷；缺席不代表失去隊友資格。
               </p>
 
               {activeGroup && activeGroup.members.length > 0 ? (

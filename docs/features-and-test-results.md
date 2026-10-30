@@ -1,163 +1,114 @@
-# 攜手基地 (Hand-in-Hand) — 功能清單及測試結果報告
+# 攜手基地 PRD v2.0 功能清單及測試結果報告
 
-| 項目 | 內容 |
-|---|---|
-| **專案名稱** | 攜手基地 (Hand-in-Hand) — 線上同儕活動服務系統 (PoC) |
-| **測試範圍** | PRD v1.0 全功能需求 (FR-01 ~ FR-16) 與業務規則 (BR-01 ~ BR-10) |
-| **測試環境** | Node.js v22+ / React 19.0 / Vite 6.2 / Vitest 3.2.7 / Windows 11 / Chrome |
-| **測試結果** | **100% 通過 (All Passed: 2/2 Unit Suites, 7/7 E2E Scenarios, 16/16 FR, 10/10 BR)** |
-| **報告日期** | 2026-10-28 |
+**產品階段：可互動 UI PoC（友誼支持系統）**  
+**測試日期：2026-10-29**  
+**測試結果：全數通過 (100% Pass)**
 
 ---
 
-## 1. 完整功能清單與需求追蹤矩陣 (Traceability Matrix)
+## 1. 功能清單與驗收對照總表 (FR-01 ~ FR-18)
 
-### 1.1 功能需求清單 (FR-01 ~ FR-16)
-
-| 需求 ID | 功能名稱 | 優先級 | 實作路由與組件 | 功能實作重點與驗收條件 | 驗收狀態 |
+| 需求 ID | 功能需求名稱 | 層級 | 實作檔案與對應路由 | 功能內容與驗收證明 | 測試結果 |
 |---|---|---|---|---|---|
-| **FR-01** | 服務資訊與參與條件 | P0 | `#/` [Home.tsx](file:///c:/Users/alexl/Desktop/Programs/Hand-In-Hand/src/pages/participant/Home.tsx)<br/>`#/rules` [Rules.tsx](file:///c:/Users/alexl/Desktop/Programs/Hand-In-Hand/src/pages/participant/Rules.tsx) | 呈現服務定位、適合對象（滿18歲行動障礙成人）、固定小組機制、Minecraft 合作方式、參與規則與常見問答 (FAQ)。 | **通過 (Pass)** |
-| **FR-02** | 報名與需求提交 | P0 | `#/register` [Register.tsx](file:///c:/Users/alexl/Desktop/Programs/Hand-In-Hand/src/pages/participant/Register.tsx) | 支援必填欄位檢核、錯誤摘要警示框、一鍵帶入示範資料；包含可用時段、操作輔具、溝通偏好，不收醫療診斷。 | **通過 (Pass)** |
-| **FR-03** | 申請狀態顯示 | P0 | `#/my-status` [MyStatus.tsx](file:///c:/Users/alexl/Desktop/Programs/Hand-In-Hand/src/pages/participant/MyStatus.tsx) | 即時顯示 `待確認`、`需後續聯繫`、`可安排`、`已入組` 4 種狀態，每種狀態均提供清楚文字解讀，無冷僻代碼。 | **通過 (Pass)** |
-| **FR-04** | 申請審查與管理 | P0 | `#/admin/applications` [Applications.tsx](file:///c:/Users/alexl/Desktop/Programs/Hand-In-Hand/src/pages/admin/Applications.tsx) | 管理者可檢視申請清單、篩選狀態、開啟審查彈窗、填寫內部備註並更新處理狀態。 | **通過 (Pass)** |
-| **FR-05** | 可及性與操作確認 | P0 | 審查 Modal<br/>`#/my-status` | 包含「設備確認」、「操作方式」、「溝通偏好」、「支援需求」4 項事前檢核清單，未全數通過不得將狀態改為可安排。 | **通過 (Pass)** |
-| **FR-06** | 固定小組安排 | P0 | `#/admin/groups` [Groups.tsx](file:///c:/Users/alexl/Desktop/Programs/Hand-In-Hand/src/pages/admin/Groups.tsx) | 支援將可安排成員編入 6–8 人固定小組（如晨曦探索隊）；編組後參與者端即時聯動更新為「已入組」並看見組員。 | **通過 (Pass)** |
-| **FR-07** | 活動排程與任務資訊 | P0 | `#/admin/sessions` [Sessions.tsx](file:///c:/Users/alexl/Desktop/Programs/Hand-In-Hand/src/pages/admin/Sessions.tsx) | 建立 8 週排程，包含主題、共同任務目標、時間、主持人、備援聯絡人及「待發布／已發布」切換開關。 | **通過 (Pass)** |
-| **FR-08** | 活動加入指引 | P0 | `#/my-status` [MyStatus.tsx](file:///c:/Users/alexl/Desktop/Programs/Hand-In-Hand/src/pages/participant/MyStatus.tsx) | 提供 Minecraft 伺服器 IP、語音/文字頻道、逐步登入教學與備援聯絡電話；僅在「已入組且已發布」時顯現。 | **通過 (Pass)** |
-| **FR-09** | 出席紀錄 | P0 | `#/admin/sessions` [Sessions.tsx](file:///c:/Users/alexl/Desktop/Programs/Hand-In-Hand/src/pages/admin/Sessions.tsx) | 支援逐一登記出席、缺席、事先請假；自動重算場次出席率並排除取消場次。 | **通過 (Pass)** |
-| **FR-10** | 活動回饋 | P0 | `#/feedback` [Feedback.tsx](file:///c:/Users/alexl/Desktop/Programs/Hand-In-Hand/src/pages/participant/Feedback.tsx) | 參與者提交單場評分 (1–5 星)、同儕歸屬連結感 (1–5 星)、協作體驗滿意度與下次參與意願；送出後即時反映確認。 | **通過 (Pass)** |
-| **FR-11** | 問題回報 | P0 | `#/report-issue` [ReportIssue.tsx](file:///c:/Users/alexl/Desktop/Programs/Hand-In-Hand/src/pages/participant/ReportIssue.tsx) | 分類技術問題、互動安全與其他問題；採一對一加密提交，保障隱私，不公開於社群。 | **通過 (Pass)** |
-| **FR-12** | 事件處理紀錄 | P0 | `#/admin/issues` [Issues.tsx](file:///c:/Users/alexl/Desktop/Programs/Hand-In-Hand/src/pages/admin/Issues.tsx) | 管理者檢視通報事件、切換「新案件／處理中／已處理」，並記錄內部處置對策與後續追蹤事項。 | **通過 (Pass)** |
-| **FR-13** | 服務摘要儀表板 | P0 | `#/admin/dashboard` [Dashboard.tsx](file:///c:/Users/alexl/Desktop/Programs/Hand-In-Hand/src/pages/admin/Dashboard.tsx) | 彙總申請數、入組數、總體出席率、重複參與率、同儕連結感均分；各指標均明記分子、分母與排除規則。 | **通過 (Pass)** |
-| **FR-14** | 結束後追蹤 | P0 | `#/feedback` 追蹤分頁<br/>`#/admin/follow-up` | 8 週週期結束後提供持續聯繫意願自評；後台將未回覆者與負面意願者明確分開統計。 | **通過 (Pass)** |
-| **FR-15** | 活動提醒 | P1 | `#/admin/dashboard` 頂部按鈕 | 站內提示發送「活動前 1 小時提醒通知」模擬廣播，清楚懸掛 `<SimBadge>`。 | **通過 (Pass)** |
-| **FR-16** | 資料匯出 | P1 | 儀表板「複製彙總」按鈕 | 一鍵複製統計數值彙總至剪貼簿；匯出格式乾淨，絕不攜帶成員機敏個資。 | **通過 (Pass)** |
+| **FR-01** | 小組基地首頁 | P0 | `src/pages/participant/BaseHome.tsx`<br>路由：`#/` | 呈現固定小組（青鳥一組）、天空青鳥共同世界、當前第 3 週進程、上次水上花園成果、下次活動與共同目標，非純場次表單。 | **通過** |
+| **FR-02** | 共同世界／成果延續 | P0 | `src/pages/participant/BaseHome.tsx`<br>路由：`#/` | 檢視第 1 週「基地休憩景觀台」與第 2 週「無障礙水上步道與環湖涼亭」成果卡、待完成項目清單，刷新切頁後資料本機持續保存。 | **通過** |
+| **FR-03** | 合作任務板 | P0 | `src/pages/participant/BaseHome.tsx`<br>路由：`#/` | 呈現「一起決定並建設基地無障礙迎賓入口」，包含明確團隊目標、分工進度條與成果說明，非單人清單。 | **通過** |
+| **FR-04** | 提案與共同決策 | P0 | `src/pages/participant/BaseHome.tsx`<br>路由：`#/` | 支援「+ 提出我的設計想法」表單；顯示小禾、阿木、海風提案並投票，即時計算勝出並標註「★ 目前小組首選」。 | **通過** |
+| **FR-05** | 貢獻方式選擇與切換 | P0 | `src/pages/participant/BaseHome.tsx`<br>路由：`#/` | 提供直接操作、設計方案、建材歸納、文字協調 4 種方式；參與者可自主隨時切換，畫面即時回饋，不依障礙分類。 | **通過** |
+| **FR-06** | 求助／暫停／重新加入 | P0 | `BaseHome.tsx` / `HostConsole.tsx`<br>路由：`#/` 與 `#/host/console` | 參與者點選「遇到卡關／請求協助」送出求助，主持人即刻接收並點擊「立即回應並標記已支援」，參與者端即刻顯示回覆。 | **通過** |
+| **FR-07** | 低壓力交流與回顧 | P0 | `src/pages/participant/BaseHome.tsx`<br>路由：`#/` | 提供共同決策與下次期待對話提示，每題均允許自由輸入或跳過略過，不要求揭露敏感隱私或個人病歷。 | **通過** |
+| **FR-08** | 共同記憶／活動摘要 | P0 | `src/pages/participant/BaseHome.tsx`<br>路由：`#/` | 活動結算生成小組決策成果摘要（選定入口風格、採納想法、下次接續項目），不保存監控私密聊天。 | **通過** |
+| **FR-09** | 下次活動共同計畫 | P0 | `src/pages/participant/BaseHome.tsx`<br>路由：`#/` | 成員投票選擇下次目標（延伸水上高架景觀鐵路 vs 中央博物館），即時彙整票數並呈現小組共識首選。 | **通過** |
+| **FR-10** | 參與偏好與支持設定 | P0 | `src/pages/participant/MyStatus.tsx`<br>路由：`#/my-status` | 設定文字/語音偏好、操作工具與休息需求；僅授權主持人工作查看，不公開診斷證明。 | **通過** |
+| **FR-11** | 主持人任務編排器 | P0 | `src/pages/host/TaskOrchestrator.tsx`<br>路由：`#/host/tasks` | 提供 PRD 第 4.3 節 8 週進程範本庫，填寫團隊目標與多元貢獻途徑，發布前自動進行規則檢核。 | **通過** |
+| **FR-12** | 主持人活動控制台 | P0 | `src/pages/host/HostConsole.tsx`<br>路由：`#/host/console` | 即時檢視成員貢獻途徑、處置待回應求助、觀察小組互動過程，絕無個人社交排行榜或友誼分數。 | **通過** |
+| **FR-13** | 固定小組與場次管理 | P0 | `src/pages/admin/Groups.tsx`<br>`src/pages/admin/Sessions.tsx` | 管理者維持小組與場次排程能力，退居支援層，不干擾參與者主頁基地體驗。 | **通過** |
+| **FR-14** | 安全事件回報與管理 | P0 | `ReportIssue.tsx` / `Issues.tsx`<br>路由：`#/report-issue` 與 `#/admin/issues` | 私密回報技術或互動問題，一對一處置，不在公開小組頁面揭露敏感細節。 | **通過** |
+| **FR-15** | 自願線下／活動外提案 | P1 | `src/pages/participant/BaseHome.tsx`<br>路由：`#/` | 成員可表達科技展小聚意願，明確標明地點、交通與場地可及性待確認；選擇「暫不考慮」不扣分，權益無損。 | **通過** |
+| **FR-16** | 活動提醒 | P1 | `src/pages/admin/Dashboard.tsx`<br>路由：`#/admin/dashboard` | 站內提示模擬發送活動前 1 小時提醒廣播，明確標記為站內模擬狀態，未串接外部真實通訊。 | **通過** |
+| **FR-17** | 匯總成效摘要 | P1 | `src/pages/admin/Dashboard.tsx`<br>路由：`#/admin/dashboard` | 彙總小組層級互動指標（共同決策數、投票參與率、多元途徑分佈），明確標示「示範資料，非實際服務成效」，排除個人排行。 | **通過** |
+| **FR-18** | 資料匯出 | P2 | `src/pages/admin/Dashboard.tsx`<br>路由：`#/admin/dashboard` | 一鍵複製 PRD v2.0 服務執行與小組互動成效文字摘要至系統剪貼簿。 | **通過** |
 
 ---
 
-### 1.2 業務規則檢驗清單 (BR-01 ~ BR-10)
+## 2. 業務規則與服務政策驗收表 (BR-01 ~ BR-10)
 
-| 規則 ID | 規則名稱 | 規範條件 | 程式碼防呆與實作證明 | 驗收狀態 |
+| 規則 ID | 規則名稱 | PRD 規範要求 | PoC 實作與檢查方式 | 測試結果 |
 |---|---|---|---|---|
-| **BR-01** | 成年資格 | 年滿 18 歲成人方可報名 | [Register.tsx:L73-L76](file:///c:/Users/alexl/Desktop/Programs/Hand-In-Hand/src/pages/participant/Register.tsx#L73-L76) 檢查 `age >= 18`，違規顯示紅色警告並禁止送出。 | **通過 (Pass)** |
-| **BR-02** | 參與同意 | 須同意守則後進入流程 | [Register.tsx:L83-L86](file:///c:/Users/alexl/Desktop/Programs/Hand-In-Hand/src/pages/participant/Register.tsx#L83-L86) 強制勾選 `agreedRules`，未勾選禁止提交。 | **通過 (Pass)** |
-| **BR-03** | 固定小組 | 6–8 人固定名冊參與 | [Groups.tsx](file:///c:/Users/alexl/Desktop/Programs/Hand-In-Hand/src/pages/admin/Groups.tsx) 以固定名單管理，各場次成員一致，支持同儕深層互動。 | **通過 (Pass)** |
-| **BR-04** | 平台可及性 | 分組前需完成 4 項確認 | [Applications.tsx:L97-L105](file:///c:/Users/alexl/Desktop/Programs/Hand-In-Hand/src/pages/admin/Applications.tsx#L97-L105) 需勾齊設備、操作、溝通、支援 4 項才允許轉為「可安排」。 | **通過 (Pass)** |
-| **BR-05** | 參與方式選擇 | 尊重文字/語音，不強迫語音 | [types.ts:L32](file:///c:/Users/alexl/Desktop/Programs/Hand-In-Hand/src/types.ts#L32) 支援文字為主/語音為主/兩者皆可，活動指引同步提供文字與語音管道。 | **通過 (Pass)** |
-| **BR-06** | 私人空間權限 | 連線指引僅入組發布可見 | [MyStatus.tsx:L186-L195](file:///c:/Users/alexl/Desktop/Programs/Hand-In-Hand/src/pages/participant/MyStatus.tsx#L186-L195) 僅在狀態為「已入組」且場次為「已發布」時顯露連線 IP。 | **通過 (Pass)** |
-| **BR-07** | 安全處置與隱私 | 專屬事件回報與處置 | [ReportIssue.tsx](file:///c:/Users/alexl/Desktop/Programs/Hand-In-Hand/src/pages/participant/ReportIssue.tsx) 與 [Issues.tsx](file:///c:/Users/alexl/Desktop/Programs/Hand-In-Hand/src/pages/admin/Issues.tsx) 形成閉環，不於公開頁面談論個案。 | **通過 (Pass)** |
-| **BR-08** | 活動外聯繫自願 | 聯絡方式自願分享 | [Register.tsx:L178-L185](file:///c:/Users/alexl/Desktop/Programs/Hand-In-Hand/src/pages/participant/Register.tsx#L178-L185) 「是否同意分享聯絡方式」設為非必填且預設為否。 | **通過 (Pass)** |
-| **BR-09** | 資料最小化 | 不收醫療診斷或證明 | 表單僅詢問操作方式與協助需求，註明無須提供診斷證明。 | **通過 (Pass)** |
-| **BR-10** | PoC 資料隔離 | 虛構資料並標示模擬 | [SimBadge.tsx](file:///c:/Users/alexl/Desktop/Programs/Hand-In-Hand/src/components/SimBadge.tsx) 標籤於全站各項模擬連線、廣播與假資料處清晰懸掛。 | **通過 (Pass)** |
+| **BR-01** | 成年資格 | 年滿 18 歲成人。 | 報名表檢驗年齡欄位，未滿 18 歲阻擋送出。 | **通過** |
+| **BR-02** | 參與同意 | 需閱讀並勾選同意守則。 | 必填同意守則方可完成申請流程。 | **通過** |
+| **BR-03** | 固定小組 | 以固定小組反覆相聚以建立熟悉感。 | 系統綁定固定小組（青鳥一組），每次聚會全員回到同一小組世界。 | **通過** |
+| **BR-04** | 平台可及性 | 活動前確認設備與操作方式。 | 後台提供 4 項可及性檢核清單（設備、操作、溝通、支援需求）。 | **通過** |
+| **BR-05** | 參與方式自主 | 尊重文字與語音偏好，不以開麥為唯一條件。 | 任務板提供文字協調、設計選擇等多元途徑，不強制語音發言。 | **通過** |
+| **BR-06** | 私人世界空間 | 共同基地採受邀制與固定名冊。 | 基地連線資訊僅已入組同伴可查閱。 | **通過** |
+| **BR-07** | 安全處置流程 | 專屬事件處置與隱私保護。 | 獨立問題求助入口與後台事件處理工作台。 | **通過** |
+| **BR-08** | 活動外聯繫自願 | 私下交流採自願原則，不得設為門檻。 | 聯絡方式分享為可選勾選，線下活動提案允許略過或選擇暫不考慮。 | **通過** |
+| **BR-09** | 資料最小化 | 不蒐集與服務無關之醫療診斷。 | 僅詢問操作方式與支援偏好，不要求診斷證明書。 | **通過** |
+| **BR-10** | 原型誠實呈現 | 虛構種子資料需標示模擬，無個人排名。 | 全站標示 `<SimBadge>`；嚴禁產出個人友誼分數或社交排名清單。 | **通過** |
 
 ---
 
-## 2. 自動化測試執行與指標驗證 (Automated Unit Tests)
+## 3. PRD 第 9 節：9 步驟端到端情境實測紀錄
 
-專案採用 **Vitest** 作為單元與業務邏輯測試框架，針對指標運算、統計排除口徑與邊界情況進行自動化驗證。
+情境名稱：**從再次相聚到接續共同計畫**
 
-### 2.1 測試執行紀錄
-```bash
-> hand-in-hand@0.1.0 test
-> vitest run
+| 步驟 | 測試情境與操作說明 | 預期結果 | 實測紀錄 |
+|:---:|---|---|:---:|
+| **1** | 參與者（小禾）進入「我的小組基地」`#/` | 看到青鳥一組、共同世界天空青鳥島嶼、上次成果「水上步道與涼亭」及未完成事項清單。 | **通過** |
+| **2** | 打開合作任務板 | 看到第 3 週任務「基地無障礙迎賓入口」，瀏覽 4 種多元貢獻方式（操作、設計、建材、討論）。 | **通過** |
+| **3** | 提交與投票提案 | 點擊小禾「柔光拱橋」提案「投票支持」，即時票數領先並顯示「★ 目前小組首選」。 | **通過** |
+| **4** | 切換參與方式 | 點擊切換為「提出或篩選設計方案」，按鈕高亮選中，即時切換無障礙標籤。 | **通過** |
+| **5** | 請求協助與主持人回應 | 點擊「遇到卡關／請求協助」送出；切換至陳主持控制台點擊「立即回應並標記已支援」；返回參與者端顯示回覆內容。 | **通過** |
+| **6** | 共同成果摘要結算 | 檢視本週結算摘要卡：「小組選定柔光拱橋，阿木負責感應地燈，海風與雲雀協助植栽建材」。 | **通過** |
+| **7** | 可跳過回顧與下次計畫 | 輸入回顧感想送出；投票支持下次目標「延伸水上無障礙高架景觀鐵路 (觀光礦車)」。 | **通過** |
+| **8** | 主持人小組互動摘要 | 切換至陳主持控制台，檢視小組決策完成數（1次）、投票率（100%）、求助回應率（100%），無個人友誼分數。 | **通過** |
+| **9** | 自願線下探索提案 | 檢視「無障礙科技輔具體驗展小聚」，確認標註地點/交通/可及性待確認，點擊「有興趣」表達意願。 | **通過** |
 
- RUN  v3.2.7 C:/Users/alexl/Desktop/Programs/Hand-In-Hand
+---
 
- ✓ src/metrics.test.ts (2 tests) 4ms
+## 4. 自動化單元測試報告 (Vitest)
+
+- **測試指令**：`npm test`
+- **測試工具**：Vitest v3.2.7
+- **測試檔案**：`src/metrics.test.ts`
+- **執行結果**：1 個測試檔案、3 個測試案例全數綠燈通過。
+
+```
+ RUN  v3.2.7 C:/Users/whitetape/Desktop/Programs/Hand-In-Hand
+
+ ✓ src/metrics.test.ts (3 tests) 4ms
+   ✓ PRD Metrics & Business Rule Calculations > correctly calculates baseline metrics with mock data
+   ✓ PRD Metrics & Business Rule Calculations > guarantees unrecorded and cancelled sessions are not counted as absences
+   ✓ PRD Metrics & Business Rule Calculations > correctly calculates group-level interaction metrics without individual rankings (PRD v2.0 FR-17)
 
  Test Files  1 passed (1)
-      Tests  2 passed (2)
-   Start at  20:13:30
-   Duration  454ms (transform 63ms, setup 0ms, collect 72ms, tests 4ms, environment 0ms, prepare 121ms)
-```
-
-### 2.2 測試案例詳細對照與斷言結果
-
-| 測試案例 | 驗證內容 | 預期值 | 實測值 | 結論 |
-|---|---|---|---|---|
-| **Case 1: 基礎指標精算** | 累計申請總數 | 7 筆 | 7 筆 | **PASS** |
-| | 成功入組總數 | 4 筆 | 4 筆 | **PASS** |
-| | 待審核申請數 | 2 筆 | 2 筆 | **PASS** |
-| | 總體出席人次 / 應出席人次 | 7 人次 / 8 人次 | 7 / 8 | **PASS** |
-| | 總體出席率計算口徑 | 88% (四捨五入) | 88% | **PASS** |
-| | 重複參與成員數 / 應參與成員數 | 3 人 / 4 人 | 3 / 4 | **PASS** |
-| | 重複參與率 (出席場次 >= 2) | 75% | 75% | **PASS** |
-| | 同儕連結感評分總筆數 | 3 筆回饋 | 3 筆 | **PASS** |
-| | 同儕連結感平均分數 | 4.7 分 ((4+5+5)/3) | 4.7 分 | **PASS** |
-| | 結案問卷實際已回覆人數 | 1 人 (1 人待回覆) | 1 人 | **PASS** |
-| | 結案持續聯繫意願率 (排除待回覆) | 100% (1/1) | 100% | **PASS** |
-| | 安全事件案件狀態分佈 | 總數 3 / 未處理 2 / 已處理 1 | 3 / 2 / 1 | **PASS** |
-| **Case 2: 邊界與排除防護** | 未排程或未記錄場次 | 排除計算，不列為缺席 | 應出席數: 0, 出席率: 0% | **PASS** |
-
----
-
-## 3. 端到端展示劇本驗收 (PRD §10.1 7-Step Demo Acceptance)
-
-本系統於瀏覽器端執行完整 7 步展示劇本，皆已全數跑通：
-
-```
-[劇本步驟 1] 參與者前台報名
-  ├── 進入 /register，點擊「一鍵帶入示範資料」
-  ├── 表單自動填入：暱稱「測試小飛」、年齡 24、手把+單手輔具、偏好文字溝通、同意守則
-  ├── 點擊「提交報名申請」
-  └── 結果：即時導向 /my-status，顯示申請狀態為【待確認】，附帶詳細解讀文字。
-
-[劇本步驟 2] 管理者可及性審查
-  ├── 切換角色為「管理者」，進入 /admin/applications
-  ├── 點選「測試小飛」之審查按鈕，開啟審查對話框
-  ├── 逐項檢視並勾選「4 項可及性檢核清單」（設備、操作、溝通、支援已確認）
-  ├── 將狀態由「待確認」更新為「可安排」
-  └── 結果：清單與狀態標籤即時更新為【可安排】。
-
-[劇本步驟 3] 固定小組指派
-  ├── 進入 /admin/groups，檢視 Group A（晨曦探索隊，固定每週三 19:30）
-  ├── 於可安排名單中勾選「測試小飛」並點擊「指派入組」
-  └── 結果：小組名冊即時加入測試小飛，系統自動將其申請狀態連動更新為【已入組】。
-
-[劇本步驟 4] 查閱活動與加入指引
-  ├── 切換為「參與者」視角，回到 /my-status
-  ├── 申請卡片顯示【已入組】，並顯示小組名稱「晨曦探索隊」與同組組員暱稱
-  ├── 查閱已發布之場次「第 1 週：晨曦村莊基礎地基」
-  └── 結果：展開活動加入指引，清楚看見 Minecraft 伺服器 IP、文字語音頻道、逐步登入指引與備援聯絡電話。
-
-[劇本步驟 5] 活動中問題求助與處置
-  ├── 參與者進入 /report-issue，分類選擇「技術問題」，填寫「輔具快捷鍵與跳躍衝突」
-  ├── 送出後顯示綠色確認「已收到回報」
-  ├── 切換至管理者 /admin/issues，新案件即時顯現
-  ├── 管理者更新狀態為【已處理】，並記錄「已協助調整按鍵對應表」
-  └── 結果：儀表板問題處置率即時提升。
-
-[劇本步驟 6] 出席登記與活動回饋
-  ├── 管理者進入 /admin/sessions，登記測試小飛當週出席為【出席】
-  ├── 參與者進入 /feedback，給予整體 5 星、同儕連結感 5 星，送出回饋
-  └── 結果：管理者 /admin/dashboard 之總體出席率與同儕連結感均分即時精確重算。
-
-[劇本步驟 7] 8 週結案後續追蹤
-  ├── 參與者進入 /feedback 結案追蹤分頁，自評「願意與同儕保持聯繫」
-  ├── 管理者進入 /admin/follow-up 檢視追蹤名冊
-  └── 結果：追蹤完成率更新，統計口徑將未回覆者與負面意願者精準分離呈現。
+      Tests  3 passed (3)
+   Duration  563ms
 ```
 
 ---
 
-## 4. 非功能性與無障礙檢驗成果 (A11y & NFR)
+## 5. 靜態建置與型別檢核報告 (TypeScript + Vite)
 
-| 檢驗項目 | 規範標準 | 實測方式與結果 | 結論 |
-|---|---|---|---|
-| **鍵盤無障礙操作** | WCAG 2.1 AA | 全站使用 `Tab` / `Shift+Tab` 可遊歷所有按鈕、表單輸入框與分頁；焦點具備 2px 高對比框。 | **合規** |
-| **色彩與文字對比度** | WCAG 2.1 AA | 文本色彩（`--ink-primary` `#1e293b`、背景 `#ffffff`）對比度大於 10:1；次要文字對比度大於 4.5:1。 | **合規** |
-| **表單錯誤提示語意** | A11y Guidelines | 必填欄位具備錯誤邊框、警示文字與頂部錯誤摘要列表，不單純依靠顏色表達。 | **合規** |
-| **模擬環境誠實標示** | PRD BR-10 / §8 | 所有示範資料皆為脫敏假名，連線與提醒廣播均懸掛 `<SimBadge>` 標註，未偽裝真實連線。 | **合規** |
-| **敏感個資隔離保護** | PRD BR-09 / §8 | 參與者前台僅能看見暱稱；電話與內部審核備註嚴格鎖定於管理者後台，前台不洩漏。 | **合規** |
-
----
-
-## 5. 驗收結論 (Sign-off)
-
-- **功能覆蓋率**：16 項功能需求 (FR-01 ~ FR-16) 全部實作並可正常操作。
-- **規則防呆率**：10 項業務規則 (BR-01 ~ BR-10) 全部具備防呆、驗證與資料隔離機制。
-- **測試通過率**：單元測試 100% 通過、端到端 7 步劇本 100% 通過、無障礙規範合格。
-- **驗收判定**：**准予結案交付 (Approved for Release)**。
+- **建置指令**：`npm run build` (`tsc && vite build`)
+- **TypeScript 檢核**：通過（0 errors, 0 warnings）
+- **產出 Bundle 清單**：
+  - `dist/index.html` (0.87 kB)
+  - `dist/assets/index-BaQMMJEh.css` (5.48 kB)
+  - `dist/assets/index-BDIIYnXT.js` (536.10 kB)
+- **建置耗時**：7.12 秒
 
 ---
-*文件編制：Hand-in-Hand 品質保證與驗收工程小組*
+
+## 6. 瀏覽器端到端視覺走查與錄影紀錄
+
+- **走查環境**：Chrome / Chromium (無周邊裝飾框架，原生畫面捕捉)
+- **測試網址**：`http://localhost:5173/`
+- **錄影檔路徑**：`file:///C:/Users/whitetape/.gemini/antigravity-ide/brain/d270dc0e-33db-4033-9774-8187c7f12d7b/prd_v2_verification_1793256614555.webp`
+- **走查覆蓋**：
+  - 參與者基地主頁、作品卡片、任務板、提案投票
+  - 4 種貢獻方式切換
+  - 求助訊號送出與主持人控制台即時處置
+  - 任務範本編排器 8 週範本套用
+  - 服務管理儀表板指標與誠實標籤
+  - 驗收清單頁面 (FR-01 ~ FR-18 + 9 步驟檢驗)

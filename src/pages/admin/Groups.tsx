@@ -34,10 +34,10 @@ export const AdminGroups: React.FC = () => {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-8)' }}>
       <div>
         <h1 style={{ fontSize: 'var(--text-3xl)', fontWeight: 700 }}>
-          固定同儕小組安排 (FR-06, BR-03)
+          固定同儕小組管理
         </h1>
         <p style={{ color: 'var(--ink-secondary)', fontSize: 'var(--text-base)', marginTop: 4 }}>
-          依 PRD BR-03 原則：參與者原則上安排於 6-8 人固定小組，以支持持續互動與友誼建立。
+          固定小組原則：每組維持 6-8 人穩定成員，支持在每週相聚中逐步熟悉並自然建立深厚友誼。
         </p>
       </div>
 
@@ -93,7 +93,7 @@ export const AdminGroups: React.FC = () => {
                 <h2 style={{ fontSize: 'var(--text-xl)', fontWeight: 700 }}>
                   【{activeGroup.name}】成員名單
                 </h2>
-                <SimBadge label="OD-02 試辦 6-8 人標準" />
+                <SimBadge label="6-8 人固定編制" />
               </div>
 
               {/* 成員列表 */}

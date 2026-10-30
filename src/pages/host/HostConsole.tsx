@@ -50,7 +50,7 @@ export const HostConsole: React.FC = () => {
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <h1 style={{ fontSize: 'var(--text-3xl)', fontWeight: 800 }}>
-              主持人活動控制台 (FR-12)
+              主持人活動即時控制台
             </h1>
             <span className="chip chip-info">陳主持（引導社工師）</span>
             <SimBadge label="即時協調・支援安全與連續性" />
@@ -111,10 +111,10 @@ export const HostConsole: React.FC = () => {
                   <div>
                     當前貢獻途徑：
                     <span className="chip chip-info" style={{ fontSize: '11px', marginLeft: 4 }}>
-                      {app?.currentContributionMode === 'direct_build' && '直接操作遊戲'}
-                      {app?.currentContributionMode === 'design_choice' && '提出/篩選設計'}
-                      {app?.currentContributionMode === 'resource_sort' && '建材整理'}
-                      {app?.currentContributionMode === 'text_voice_coord' && '文字/語音協調'}
+                      {app?.currentContributionMode === 'direct_build' && '空間建造'}
+                      {app?.currentContributionMode === 'design_choice' && '設計規劃'}
+                      {app?.currentContributionMode === 'resource_sort' && '景觀配置'}
+                      {app?.currentContributionMode === 'text_voice_coord' && '導覽敘事'}
                     </span>
                   </div>
                 </div>
@@ -134,9 +134,9 @@ export const HostConsole: React.FC = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <WarningCircle size={22} color="#D9534F" weight="bold" />
             <h2 id="help-desk-heading" style={{ fontSize: 'var(--text-xl)', fontWeight: 700 }}>
-              成員求助與暫停處置工作台 (FR-06)
+              成員求助與暫停處置工作台
             </h2>
-            <SimBadge label="PRD 第 9 節第 5 步關鍵檢驗" />
+            <SimBadge label="雙向支援・即時回應" />
           </div>
           <span style={{ fontSize: 'var(--text-xs)', color: 'var(--ink-secondary)' }}>
             雙向通訊・參與者端即時獲取確認
@@ -226,14 +226,14 @@ export const HostConsole: React.FC = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
               <ChartBar size={22} color="var(--primary)" />
               <h2 id="interaction-metrics-heading" style={{ fontSize: 'var(--text-xl)', fontWeight: 700 }}>
-                小組層級互動與協作摘要 (FR-17)
+                小組層級協作與互動摘要
               </h2>
             </div>
             <p style={{ fontSize: 'var(--text-xs)', color: 'var(--ink-secondary)', marginTop: 2 }}>
-              嚴格遵循 PRD 第 8.3 節規範：以小組協作與決策過程為主，絕無個人社交排行榜或友誼分數。
+              以小組協作與共同決策過程為主，絕無個人社交排行榜或友誼打分。
             </p>
           </div>
-          <SimBadge label="示範資料，非實際服務成效" />
+          <SimBadge label="服務觀察紀錄" />
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 'var(--space-4)' }}>
@@ -284,10 +284,10 @@ export const HostConsole: React.FC = () => {
             多元參與貢獻分佈（不依障礙分類）：
           </strong>
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', fontSize: 'var(--text-xs)' }}>
-            <span>• 直接操作遊戲：<strong>{groupMetrics.contributionModeDistribution.direct_build}</strong> 人</span>
-            <span>• 提出/篩選設計：<strong>{groupMetrics.contributionModeDistribution.design_choice}</strong> 人</span>
-            <span>• 建材資源整理：<strong>{groupMetrics.contributionModeDistribution.resource_sort}</strong> 人</span>
-            <span>• 討論協調筆記：<strong>{groupMetrics.contributionModeDistribution.text_voice_coord}</strong> 人</span>
+            <span>• 空間建造：<strong>{groupMetrics.contributionModeDistribution.direct_build}</strong> 人</span>
+            <span>• 設計規劃：<strong>{groupMetrics.contributionModeDistribution.design_choice}</strong> 人</span>
+            <span>• 景觀配置：<strong>{groupMetrics.contributionModeDistribution.resource_sort}</strong> 人</span>
+            <span>• 導覽敘事：<strong>{groupMetrics.contributionModeDistribution.text_voice_coord}</strong> 人</span>
           </div>
         </div>
       </section>

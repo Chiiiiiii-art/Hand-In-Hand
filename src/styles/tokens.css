@@ -89,3 +89,33 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* 無障礙：大字模式 (提升易讀性、降低弱視與長輩辨識負擔) */
+html.large-text {
+  font-size: 18.5px;
+}
+
+/* 無障礙：高對比模式 (符合身心障礙者光敏感、低視力之清晰邊界需求) */
+html.high-contrast {
+  --bg-sand: #FFFFFF;
+  --bg-sand-darker: #EAE6DC;
+  --surface: #FFFFFF;
+  --ink-primary: #000000;
+  --ink-secondary: #222222;
+  --ink-muted: #333333;
+  --border: #000000;
+  --border-focus: #000000;
+  --primary: #004D40;
+  --primary-hover: #00251A;
+  --primary-light: #E0F2F1;
+  --primary-border: #004D40;
+}
+
+/* 無障礙：低刺激專注模式 (減少非必要動態與高彩刺激) */
+html.calm-mode {
+  --bg-sand: #F8F5F0;
+  --bg-sand-darker: #EFEBE4;
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+}

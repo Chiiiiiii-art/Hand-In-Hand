@@ -53,13 +53,13 @@ export const TaskOrchestrator: React.FC = () => {
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <h1 style={{ fontSize: 'var(--text-3xl)', fontWeight: 800 }}>
-              主持人任務編排器 (FR-11)
+              主持人任務編排器
             </h1>
             <span className="chip chip-info">陳主持（引導社工師）</span>
             <SimBadge label="團隊互惠任務範本" />
           </div>
           <p style={{ color: 'var(--ink-secondary)', fontSize: 'var(--text-base)', marginTop: 4 }}>
-            編排符合 PRD v2.0 友誼支持原則的共同任務：具備明確團隊目標、多元有意義的貢獻方式與非強制性回顧提示。
+            編排符合同儕友誼支持原則的共同任務：具備明確團隊目標、多元有意義的貢獻方式與非強制性回顧提示。
           </p>
         </div>
       </div>
@@ -70,7 +70,7 @@ export const TaskOrchestrator: React.FC = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
             <FileText size={20} color="var(--primary)" />
             <h2 id="templates-title" style={{ fontSize: 'var(--text-lg)', fontWeight: 700 }}>
-              PRD 第 4.3 節：八週共同世界進程範本
+              八週共同世界進程範本庫
             </h2>
           </div>
 
@@ -115,7 +115,7 @@ export const TaskOrchestrator: React.FC = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
             <GameController size={20} color="var(--primary)" />
             <h2 id="task-form-title" style={{ fontSize: 'var(--text-lg)', fontWeight: 700 }}>
-              任務內容設定與規則檢核 (FR-11)
+              任務內容設定與規則檢核
             </h2>
           </div>
 
@@ -160,9 +160,8 @@ export const TaskOrchestrator: React.FC = () => {
               />
             </div>
 
-            {/* 預設多元貢獻方式檢核 (FR-11 要求發布前檢查必要欄位) */}
             <div style={{ backgroundColor: 'var(--bg-sand-darker)', padding: '12px', borderRadius: 'var(--radius-md)', fontSize: 'var(--text-xs)' }}>
-              <div style={{ fontWeight: 700, marginBottom: 6 }}>已包含 4 種有意義的貢獻方式 (FR-05 檢查通過)：</div>
+              <div style={{ fontWeight: 700, marginBottom: 6 }}>已包含 4 種多元貢獻方式（無障礙多元參與）：</div>
               <ul style={{ margin: 0, paddingLeft: 18, color: 'var(--ink-secondary)', lineHeight: 1.6 }}>
                 <li>直接操作遊戲（方塊放置與結構搭建）</li>
                 <li>提出或篩選設計方案（草圖瀏覽與投票排序）</li>

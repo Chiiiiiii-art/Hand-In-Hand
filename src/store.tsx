@@ -171,7 +171,7 @@ function appReducer(state: AppState, action: Action): AppState {
         issues: INITIAL_ISSUES,
         followUps: INITIAL_FOLLOW_UPS,
         isDemoGuideOpen: false,
-        toastMessage: '已重置為 PRD v2.0 初始示範資料！',
+        toastMessage: '已重置為初始示範資料！',
       };
     }
 

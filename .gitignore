@@ -134,3 +134,12 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Third-party copyrighted references & contest materials
+proposal/ref_cited/
+proposal/ref_winner/
+
+# OS and Editor temp files
+Thumbs.db
+.DS_Store
+*.tmp

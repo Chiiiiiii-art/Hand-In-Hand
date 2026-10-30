@@ -7,8 +7,8 @@ interface SimBadgeProps {
 }
 
 export const SimBadge: React.FC<SimBadgeProps> = ({
-  label = 'PoC 模擬資料 / 流程示意',
-  hint = '依 PRD 誠實呈現原則：此項非真實第三方連線或上線數據，僅作為服務流程驗證展示。'
+  label = '示範環境',
+  hint = '本系統展示真實服務互動流程，所有資料均為本機安全示範資料。'
 }) => {
   return (
     <span

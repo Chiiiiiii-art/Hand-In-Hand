@@ -183,7 +183,7 @@ export const INITIAL_APPLICATIONS: Application[] = [
 export const INITIAL_GROUPS: Group[] = [
   {
     id: 'grp-01',
-    name: '翠鳥一組 (試辦固定組)',
+    name: '常青樹小隊 (試辦固定組)',
     fixedTimeSlot: '每週三晚間 19:30 - 21:00',
     hostName: '陳主持 (引導社工師)',
     backupContact: '專線 02-2345-6789 / 官方備援 Discord: @admin_sos',
@@ -197,11 +197,11 @@ export const INITIAL_GROUPS: Group[] = [
   }
 ];
 
-// FR-01 & FR-02: 翠鳥一組持續發展的共同世界 (Minecraft Creative 示範世界)
+// FR-01 & FR-02: 常青樹小隊持續發展的共同世界 (Minecraft Creative 示範世界)
 export const INITIAL_BASE_WORLDS: GroupBaseWorld[] = [
   {
     groupId: 'grp-01',
-    worldName: '天空翠鳥浮空島嶼基地',
+    worldName: '常青樹浮空島嶼基地',
     worldTheme: '無障礙環湖花園與空中閱讀城邦',
     serverAddress: 'mc.handinhand.demo:25565 (示範專用伺服器)',
     versionInfo: 'Minecraft Creative 1.20+ 無障礙輔具映射相容',
@@ -210,7 +210,7 @@ export const INITIAL_BASE_WORLDS: GroupBaseWorld[] = [
         id: 'deliv-01',
         title: '基地初創地標與休憩景觀台',
         weekNumber: 1,
-        description: '小組成員在中央空島共同選址、插上翠鳥隊旗，鋪設平坦安全的集合廣場，並設置夜間柔和螢石照明。',
+        description: '小組成員在中央空島共同選址、插上常青樹隊旗，鋪設平坦安全的集合廣場，並設置夜間柔和螢石照明。',
         category: '休閒空間',
         completedAt: '2026-10-14',
         imageTag: 'pavilion',
@@ -252,9 +252,9 @@ export const INITIAL_COOP_TASKS: CoopTask[] = [
         taskId: 'task-01',
         applicantId: 'app-01',
         authorNickname: '小禾',
-        title: '柔光拱橋入口＋螢石迎賓地標',
-        concept: '以白石英與螢石搭建平緩拱橋，入口設有低照度夜行導引燈柱，寬度至少 4 格便於多人並行通過。',
-        accessibilityFeature: '超寬無門檻通道、高對比夜光方塊導引，視覺清晰容易定位。',
+        title: '中世紀石磚門樓',
+        concept: '以石磚拱門搭配中央雙開平緩斜坡，入口設有夜行柔光螢石柱，寬度 4 格便於多人並行通過。',
+        accessibilityFeature: '超寬平坦通道無門檻，高對比夜光方塊指引，視覺清晰容易定位。',
         votes: ['app-01', 'app-03']
       },
       {
@@ -272,44 +272,44 @@ export const INITIAL_COOP_TASKS: CoopTask[] = [
         taskId: 'task-01',
         applicantId: 'app-03',
         authorNickname: '海風',
-        title: '自然植栽綠意藤蔓迎賓廊道',
-        concept: '木質拱架搭滿垂掛藤蔓與花盆，地面鋪設防滑青苔毯，營造放鬆森林氛圍。',
-        accessibilityFeature: '無落差平坦草皮地毯，柔和自然光不刺眼。',
+        title: '自然藤蔓綠意廊道',
+        concept: '木質拱架搭滿垂掛藤蔓與花盆，地面鋪設防滑青苔毯，營造放鬆清幽森林氛圍。',
+        accessibilityFeature: '無落差平坦草皮地毯，柔和自然漫射採光不刺眼。',
         votes: ['app-04']
       }
     ],
     contributionOptions: [
       {
         id: 'direct_build',
-        title: '直接操作遊戲',
-        shortDesc: '進入 Minecraft 伺服器放置方塊、鋪設橋面或搭建拱門柱。',
-        inputDescription: '支援鍵鼠、單手手把、螢幕虛擬按鈕與改裝開關。',
+        title: '空間建造（放置方塊與實體搭建）',
+        shortDesc: '進入 Minecraft Creative 共同世界放置方塊、鋪設路徑與搭建建築結構。',
+        inputDescription: '支援鍵鼠、單手控制器、螢幕按鈕或無障礙輸入開關。',
         iconName: 'GameController'
       },
       {
+        id: 'resource_sort',
+        title: '景觀配置（植栽、照明與風格色彩）',
+        shortDesc: '挑選並放置植栽花草、光照光源、裝飾小物與建築外觀配色調和。',
+        inputDescription: '單一功能點選放置或選色建議，步調緩和，無操作手速壓力。',
+        iconName: 'Package'
+      },
+      {
         id: 'design_choice',
-        title: '提出或篩選設計方案',
-        shortDesc: '在任務板瀏覽建築草圖、提出配色想法並為小組方案投票排序。',
+        title: '設計規劃（動線配置與格局提案）',
+        shortDesc: '在小組討論板瀏覽建築草圖、提出空間動線規劃與設計構想表決。',
         inputDescription: '純瀏覽與點擊投票，無需頻繁微調畫面或精準瞄準。',
         iconName: 'PaintBrush'
       },
       {
-        id: 'resource_sort',
-        title: '建材與資源歸納',
-        shortDesc: '在公共建材區分類收納石英、木材與發光方塊，協助夥伴快速取用。',
-        inputDescription: '單一介面拖曳整理，節奏自由無時間壓力。',
-        iconName: 'Package'
-      },
-      {
         id: 'text_voice_coord',
-        title: '文字／語音討論協調',
-        shortDesc: '在文字聊天或語音頻道提供尺寸建議、記錄完成進度並給予夥伴肯定。',
-        inputDescription: '支援語音輸入、純文字筆記與預設快捷訊息。',
-        iconName: 'ChatTeardropDots'
+        title: '導覽敘事（空間命名、導覽標示與基地故事）',
+        shortDesc: '為小隊建築設計迎賓標示、命名景點、撰寫故事背景與導覽指引。',
+        inputDescription: '文字輸入、語音轉文字或提示詞輔助，以溝通創作凝聚共同記憶。',
+        iconName: 'Sparkle'
       }
     ],
     stepProgress: 65,
-    completedSummary: '小組以 2 票支持選定小禾提案「柔光拱橋入口＋螢石迎賓地標」；阿木負責紅石感應地燈，海風與雲雀協助植栽與建材。'
+    completedSummary: '小組以 2 票支持選定小禾提案「中世紀石磚門樓」；阿木負責空間建造，海風與雲雀協助景觀配置與導覽敘事。'
   }
 ];
 
@@ -321,10 +321,10 @@ export const INITIAL_HELP_REQUESTS: HelpRequestRecord[] = [
     nickname: '雲雀',
     sessionId: 'ses-03',
     requestType: '換參與方式',
-    note: '手部控制稍疲憊，想從直接操作改為設計投票與文字討論。',
+    note: '手部控制稍疲憊，想從空間建造改為設計規劃與景觀配置。',
     submittedAt: '2026-10-28 19:48',
     status: '已由主持人支援',
-    hostReply: '沒問題雲雀！已將您切換至設計討論模式，請安心休息放鬆雙手。',
+    hostReply: '沒問題雲雀！已將您切換至設計規劃模式，請安心休息放鬆雙手。',
     handledAt: '2026-10-28 19:50'
   }
 ];

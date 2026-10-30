@@ -35,7 +35,7 @@ export const AdminIssues: React.FC = () => {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-6)' }}>
       <div>
         <h1 style={{ fontSize: 'var(--text-3xl)', fontWeight: 700 }}>
-          事件回報與安全處置紀錄 (FR-12, BR-07)
+          事件回報與安全處置紀錄
         </h1>
         <p style={{ color: 'var(--ink-secondary)', fontSize: 'var(--text-base)', marginTop: 4 }}>
           記錄技術障礙與社群互動安全事件。嚴格遵循隱私最小化原則，不將敏感事件公開。
@@ -165,7 +165,7 @@ export const AdminIssues: React.FC = () => {
 
               <div>
                 <label htmlFor="issue-followup" style={{ display: 'block', fontSize: 'var(--text-sm)', fontWeight: 600, marginBottom: 4 }}>
-                  內部後續追蹤與保護措施（限管理者紀錄，FR-12）
+                  內部後續追蹤與保護措施（限管理者紀錄）
                 </label>
                 <textarea
                   id="issue-followup"

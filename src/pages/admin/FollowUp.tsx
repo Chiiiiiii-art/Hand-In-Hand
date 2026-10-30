@@ -12,13 +12,13 @@ export const AdminFollowUp: React.FC = () => {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
         <div>
           <h1 style={{ fontSize: 'var(--text-3xl)', fontWeight: 700 }}>
-            結束後續追蹤管理 (FR-14)
+            結束後續追蹤管理
           </h1>
           <p style={{ color: 'var(--ink-secondary)', fontSize: 'var(--text-base)', marginTop: 4 }}>
             追蹤 8 週活動完成後成員之同儕聯繫意願與服務回饋。嚴格落實未回覆不作負面推估。
           </p>
         </div>
-        <SimBadge label="持續性指標 (§9)" />
+        <SimBadge label="長期友誼延續評估" />
       </div>
 
       <div className="table-wrapper">

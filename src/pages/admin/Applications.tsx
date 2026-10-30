@@ -67,7 +67,7 @@ export const AdminApplications: React.FC = () => {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 12 }}>
         <div>
           <h1 style={{ fontSize: 'var(--text-3xl)', fontWeight: 700 }}>
-            申請審查與可及性確認 (FR-04, FR-05)
+            申請審查與設備可及性確認
           </h1>
           <p style={{ color: 'var(--ink-secondary)', fontSize: 'var(--text-base)', marginTop: 4 }}>
             確認報名者之操作設備、溝通偏好，並於完成檢核後開放排入固定小組。

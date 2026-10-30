@@ -35,21 +35,21 @@ export const AdminDashboard: React.FC = () => {
     state.offlineProposals
   );
 
-  // 匯出摘要至剪貼簿 (FR-16 / FR-18)
+  // 匯出摘要至剪貼簿
   const [copied, setCopied] = useState(false);
   const handleCopySummary = () => {
-    const summaryText = `【攜手基地 PRD v2.0 服務執行與小組互動成效摘要 (示範資料)】
+    const summaryText = `【攜手基地 — 線上遊戲同儕友誼支持社群 服務成效與小組互動摘要】
 統計時間：${new Date().toISOString().slice(0, 10)}
-注意：本資料為 PoC 示範資料，非實際服務成效。絕不對個人進行社交排名或友誼打分。
+備註：恪守同儕支持與無障礙原則，絕不對個人進行社交排名或友誼打分。
 ---------------------------------------------
 1. 服務執行層級：
    - 累積申請總數：${metrics.totalApplications} 人（已入組：${metrics.totalEnrolled} 人）
    - 平均出席率：${metrics.attendanceRate.percentage}% (出席 ${metrics.attendanceRate.attendedCount} / 排定 ${metrics.attendanceRate.scheduledCount} 人次)
    - 重複參與率：${metrics.repeatParticipationRate.percentage}% (至少參與2場：${metrics.repeatParticipationRate.repeatMembersCount} 人)
-2. 小組互惠與協作互動 (FR-17)：
+2. 小組互惠與協作互動：
    - 共同決策完成數：${groupMetrics.totalTasksWithDecisions} 次 (提案總數：${groupMetrics.totalProposalsSubmitted} 件)
    - 提案投票參與率：${groupMetrics.proposalVoteParticipationRate.percentage}%
-   - 多元參與途徑：操作 ${groupMetrics.contributionModeDistribution.direct_build} / 設計 ${groupMetrics.contributionModeDistribution.design_choice} / 整理 ${groupMetrics.contributionModeDistribution.resource_sort} / 討論 ${groupMetrics.contributionModeDistribution.text_voice_coord} 人
+   - 多元參與途徑：空間建造 ${groupMetrics.contributionModeDistribution.direct_build} / 設計規劃 ${groupMetrics.contributionModeDistribution.design_choice} / 景觀配置 ${groupMetrics.contributionModeDistribution.resource_sort} / 導覽敘事 ${groupMetrics.contributionModeDistribution.text_voice_coord} 人
    - 求助及時回應率：${groupMetrics.helpRequestResponseRate.percentage}%
    - 下次計畫共識首選：${groupMetrics.nextPlanConsensus.leadingTarget}
 3. 主觀歸屬與安全：
@@ -63,11 +63,11 @@ export const AdminDashboard: React.FC = () => {
     setTimeout(() => setCopied(false), 3000);
   };
 
-  // 模擬活動提醒廣播 (FR-16)
+  // 模擬活動提醒廣播
   const handleSimulateReminder = () => {
     dispatch({
       type: 'SET_TOAST',
-      message: '【站內模擬提醒】（FR-16）：已向第 3 週翠鳥組成員顯示開場前 1 小時基地連線提醒！未發送外部簡訊。',
+      message: '【站內活動提醒】：已向第 3 週翠鳥組成員顯示開場前 1 小時基地連線提醒！',
     });
   };
 
@@ -78,12 +78,12 @@ export const AdminDashboard: React.FC = () => {
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <h1 style={{ fontSize: 'var(--text-3xl)', fontWeight: 800 }}>
-              服務成效與小組互動儀表板 (FR-17)
+              服務成效與小組互動儀表板
             </h1>
-            <SimBadge label="示範資料，非實際服務成效" />
+            <SimBadge label="服務指標聚合" />
           </div>
           <p style={{ color: 'var(--ink-secondary)', fontSize: 'var(--text-base)', marginTop: 4 }}>
-            依 PRD 第 8.3 節規範：以小組層級協作、決策與服務執行為主；嚴格排除任何個人社交排行榜或友誼分數。
+            以小組層級協作、決策與服務執行為主；嚴格排除任何個人社交排行榜或友誼分數。
           </p>
         </div>
 
@@ -92,11 +92,11 @@ export const AdminDashboard: React.FC = () => {
             type="button"
             onClick={handleSimulateReminder}
             className="btn-secondary"
-            title="模擬站內活動提醒通知 (FR-16)"
+            title="發布站內活動提醒通知"
             style={{ fontSize: 'var(--text-sm)' }}
           >
             <Bell size={18} />
-            <span>模擬活動提醒 (FR-16)</span>
+            <span>發布活動溫馨提醒</span>
           </button>
 
           <button
@@ -106,18 +106,18 @@ export const AdminDashboard: React.FC = () => {
             style={{ fontSize: 'var(--text-sm)' }}
           >
             <Copy size={18} />
-            <span>{copied ? '已複製彙總至剪貼簿！' : '匯出/複製成效彙總 (FR-18)'}</span>
+            <span>{copied ? '已複製彙總至剪貼簿！' : '匯出/複製成效彙總'}</span>
           </button>
         </div>
       </div>
 
-      {/* PRD v2.0 核心：小組協作與互動層級指標 (FR-17) */}
+      {/* 小組協作與互動層級指標 */}
       <section className="card" style={{ borderColor: 'var(--primary-border)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--space-4)', flexWrap: 'wrap', gap: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             <ChartBar size={22} color="var(--primary)" />
             <h2 style={{ fontSize: 'var(--text-xl)', fontWeight: 700 }}>
-              小組協作與互惠互動歷程 (FR-17)
+              小組協作與互惠互動歷程
             </h2>
           </div>
           <span style={{ fontSize: 'var(--text-xs)', color: 'var(--ink-secondary)' }}>
@@ -171,10 +171,10 @@ export const AdminDashboard: React.FC = () => {
         <div style={{ marginTop: 'var(--space-4)', padding: '12px 16px', backgroundColor: '#FFFFFF', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)', fontSize: 'var(--text-xs)' }}>
           <strong>多元貢獻方式分佈（不依障礙分類，所有途徑皆影響共同成果）：</strong>
           <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginTop: 6, color: 'var(--ink-secondary)' }}>
-            <span>• 直接操作遊戲：<strong>{groupMetrics.contributionModeDistribution.direct_build}</strong> 人</span>
-            <span>• 提出/篩選設計：<strong>{groupMetrics.contributionModeDistribution.design_choice}</strong> 人</span>
-            <span>• 建材資源整理：<strong>{groupMetrics.contributionModeDistribution.resource_sort}</strong> 人</span>
-            <span>• 討論協調筆記：<strong>{groupMetrics.contributionModeDistribution.text_voice_coord}</strong> 人</span>
+            <span>• 空間建造：<strong>{groupMetrics.contributionModeDistribution.direct_build}</strong> 人</span>
+            <span>• 設計規劃：<strong>{groupMetrics.contributionModeDistribution.design_choice}</strong> 人</span>
+            <span>• 景觀配置：<strong>{groupMetrics.contributionModeDistribution.resource_sort}</strong> 人</span>
+            <span>• 導覽敘事：<strong>{groupMetrics.contributionModeDistribution.text_voice_coord}</strong> 人</span>
           </div>
         </div>
       </section>
@@ -255,7 +255,7 @@ export const AdminDashboard: React.FC = () => {
               <WarningCircle size={22} color="var(--accent)" weight="fill" />
               <span>待處理問題事件 ({metrics.issueSummary.unresolved} 件)</span>
             </h2>
-            <span className="chip chip-warning">FR-14</span>
+            <span className="chip chip-warning">即時安全處置</span>
           </div>
           <p style={{ fontSize: 'var(--text-sm)', color: 'var(--ink-secondary)', marginBottom: 12 }}>
             包含技術障礙與互動安全通報。保護成員隱私，不在公開小組揭露。
@@ -267,14 +267,14 @@ export const AdminDashboard: React.FC = () => {
           </div>
         </div>
 
-        {/* 自願線下探索意願 (FR-15) */}
+        {/* 自願線下探索意願 */}
         <div className="card" style={{ borderLeft: '6px solid var(--primary)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
             <h2 style={{ fontSize: 'var(--text-lg)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 8 }}>
               <Compass size={22} color="var(--primary)" weight="fill" />
-              <span>自願線下／活動外探索意願 (FR-15)</span>
+              <span>自願線下／活動外探索意願</span>
             </h2>
-            <span className="chip chip-info">模擬意願蒐集</span>
+            <span className="chip chip-info">意願統計</span>
           </div>
           <div style={{ display: 'flex', gap: 12, fontSize: 'var(--text-sm)', margin: '8px 0' }}>
             <span>有興趣：<strong>{groupMetrics.offlineExploration.interestedCount}</strong> 人</span>

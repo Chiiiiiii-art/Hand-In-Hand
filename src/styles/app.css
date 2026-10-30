@@ -49,11 +49,54 @@ button {
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  min-height: 48px; /* 滿足觸控與行動操作無障礙標準 */
+  min-height: 44px; /* 滿足觸控與行動操作無障礙標準 */
   padding: 0 var(--space-4);
   border-radius: var(--radius-md);
   font-weight: 600;
-  transition: background-color 0.15s ease, transform 0.05s ease, border-color 0.15s ease;
+  white-space: nowrap;
+  transition: background-color 0.15s ease, transform 0.05s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* 卡片型按鈕：允許內部正常排版換行與寬鬆內距，解決按鈕作為卡片時的擁擠問題 */
+button.card-button {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  text-align: left;
+  min-height: auto;
+  white-space: normal;
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--border);
+  background-color: var(--surface);
+  line-height: var(--leading-normal);
+}
+
+/* 按鈕尺寸規格輔助類別 */
+.btn-sm {
+  min-height: 38px !important;
+  padding: 6px 16px !important;
+  font-size: 0.875rem !important;
+  border-radius: var(--radius-full) !important;
+}
+
+.btn-md {
+  min-height: 46px !important;
+  padding: 8px 22px !important;
+  font-size: 1rem !important;
+  border-radius: var(--radius-md) !important;
+}
+
+.btn-lg {
+  min-height: 52px !important;
+  padding: 12px 28px !important;
+  font-size: 1.125rem !important;
+  border-radius: var(--radius-lg) !important;
+}
+
+.btn-pill {
+  border-radius: var(--radius-full) !important;
 }
 
 button:active {
@@ -200,17 +243,17 @@ textarea {
   border-color: var(--border);
 }
 
-/* 模擬徽章 */
+/* 服務特色與狀態徽章 */
 .sim-badge {
   display: inline-flex;
   align-items: center;
   gap: 4px;
   font-size: var(--text-xs);
-  padding: 2px 8px;
-  border-radius: 4px;
-  background-color: #FEF3C7;
-  color: #92400E;
-  border: 1px dashed #D97706;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  background-color: var(--primary-light);
+  color: var(--primary);
+  border: 1px solid var(--primary-border);
   font-weight: 600;
 }
 
