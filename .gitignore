@@ -139,6 +139,9 @@ dist
 proposal/ref_cited/
 proposal/ref_winner/
 
+# Local IDE Agent configurations & skills
+.agents/
+
 # OS and Editor temp files
 Thumbs.db
 .DS_Store
