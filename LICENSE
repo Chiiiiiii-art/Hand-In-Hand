@@ -1,21 +1,17 @@
-MIT License
+版權與授權聲明 (Copyright & License Notice)
 
-Copyright (c) 2026 Alex Liu, Hand-In-Hand Contributors
+版權所有 (c) 2026 Liang Yu Chi。保留一切權利。
+Copyright (c) 2026 Liang Yu Chi. All Rights Reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+本專案所包含之提案企劃書、系統架構設計、軟體原始碼、使用者介面與相關多媒體資產，其智慧財產權與著作權均受法律保護，並依下列條款規範：
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+一、主辦單位非商業授權條款
+為配合「中華民國電腦學會資訊人社會關懷獎學金」提案評選與獎勵活動，專案作者依大會簡章規定，專屬授權主辦單位（中華民國電腦學會）得於評選審查、成果公布、檢索、出版、重製、編輯與社會關懷議題推廣等非商業目的範圍內，自由利用本專案內容。
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+二、第三方使用限制（第三方嚴格限制）
+除前條大會主辦單位授權外，未經著作權人正式事前書面許可，任何個人、法人或第三方團體：
+1. 不得以任何形式（包含但不限於重製、散布、公開傳輸、轉載或修改）使用本專案之提案核心構想、文字企劃、系統模型與程式原始碼。
+2. 不得將本專案全部或部分內容用於任何商業營利、衍生開發、閉源重組或專利申請。
+
+三、免責聲明
+本專案原始碼與相關文件係以「現況」（AS-IS）提供，僅供審查、概念驗證與技術檢閱之用。著作權人不負任何因使用本專案內容所衍生之直接或間接擔保責任。
